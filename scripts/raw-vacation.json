@@ -1,0 +1,95 @@
+{
+ "waters-edge": {
+  "h1": "Ocean breeze with coconut trees in Key West, FL",
+  "imgs": [],
+  "facts": [
+   "3 bedrooms",
+   "4 bathrooms",
+   "Sleeps 8",
+   "3 bedrooms",
+   "sleeps 8",
+   "4 bathrooms"
+  ],
+  "rating": "9.4",
+  "reviews": "44",
+  "hi": "Cook, dine, and unwind\nTop-rated for its fully equipped kitchen, perfect for every meal.\nOutdoor pool\nThe outdoor pool is a refreshing retreat under the open sky - a rare gem in this area.\nUnmatched views, unforgettable moments\nGuests like the location for the scenic views.\nDiscover nearby landmarks\nWalk to Duval Street",
+  "amen": [
+   "Pool",
+   "Kitchen",
+   "Washer",
+   "Dryer",
+   "Pet friendly",
+   "Air conditioning"
+  ],
+  "captions": [
+   "The Waters Edge",
+   "Top Floor Deck",
+   "Master Bedroom",
+   "Pool",
+   "Work Space - High speed internet available throughout home.",
+   "21+"
+  ]
+ },
+ "truman-treasure": {
+  "h1": "Tropical State of Mind Key West FL",
+  "imgs": [],
+  "facts": [
+   "3 bedrooms",
+   "Sleeps 5",
+   "3 bedrooms",
+   "sleeps 5",
+   "2 bathrooms"
+  ],
+  "rating": "9.4",
+  "reviews": "32",
+  "hi": "Dive into relaxation\nUnwind in the top-rated pool, your perfect spot for relaxation.\nOutdoor pool\nThe outdoor pool is a refreshing retreat under the open sky - a rare gem in this area.\nEasy to get around\nGuests love the convenient spot for exploring the area.\nDiscover nearby landmarks\nWalk to Duval Street",
+  "amen": [
+   "Ocean view",
+   "Pool",
+   "Kitchen",
+   "Washer",
+   "Dryer",
+   "Air conditioning"
+  ],
+  "captions": [
+   "Property grounds",
+   "Outdoor dining",
+   "Ocean Retreat",
+   "Living area",
+   "Private kitchen",
+   "30+"
+  ]
+ },
+ "grande-caribe-a9": {
+  "h1": "Grand Caribe Belize vacation rentals",
+  "og": "https://images.trvl-media.com/place/553248635976422936/bc719edf-8493-4539-a672-0cb3cd4b3640.jpg?impolicy=resizecrop&rw=1920&ra=fit&ch=480",
+  "imgs": [
+   "https://images.trvl-media.com/place/553248635976422936/bc719edf-8493-4539-a672-0cb3cd4b3640.jpg"
+  ],
+  "facts": []
+ },
+ "sunset-caribe-1": {
+  "h1": "San Pedro vacation rentals",
+  "og": "https://images.trvl-media.com/place/3253/69cfd981-a7d9-4f2f-ba43-e7f27469628e.jpg?impolicy=resizecrop&rw=1920&ra=fit&ch=480",
+  "imgs": [
+   "https://images.trvl-media.com/place/3253/69cfd981-a7d9-4f2f-ba43-e7f27469628e.jpg"
+  ],
+  "facts": []
+ },
+ "sunset-caribe-2": {
+  "h1": "San Pedro vacation rentals",
+  "og": "https://images.trvl-media.com/place/3253/69cfd981-a7d9-4f2f-ba43-e7f27469628e.jpg?impolicy=resizecrop&rw=1920&ra=fit&ch=480",
+  "imgs": [
+   "https://images.trvl-media.com/place/3253/69cfd981-a7d9-4f2f-ba43-e7f27469628e.jpg"
+  ],
+  "facts": []
+ },
+ "sunset-caribe-3": {
+  "h1": "San Pedro vacation rentals",
+  "og": "https://images.trvl-media.com/place/3253/69cfd981-a7d9-4f2f-ba43-e7f27469628e.jpg?impolicy=resizecrop&rw=1920&ra=fit&ch=480",
+  "imgs": [
+   "https://images.trvl-media.com/place/3253/69cfd981-a7d9-4f2f-ba43-e7f27469628e.jpg"
+  ],
+  "facts": []
+ }
+}

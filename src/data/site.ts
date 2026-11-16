@@ -31,17 +31,55 @@ export const nav = [
   { label: 'Contact', href: 'contact/' },
 ];
 
-// Blurbs are intentionally generic; replace with owner-approved descriptions before launch.
-export const vacationRentals = [
-  { name: "The Water's Edge", url: 'https://www.vrbo.com/327109ha?noDates=true', blurb: 'Tropical vacation rental. See photos, rates and availability on VRBO.' },
-  { name: 'Truman Treasure', url: 'https://www.vrbo.com/327107ha?noDates=true', blurb: 'Tropical vacation rental. See photos, rates and availability on VRBO.' },
-  { name: 'Grande Caribe A-9', url: 'https://www.vrbo.com/481705?adultsCount=6&noDates=true', blurb: 'Grande Caribe resort condo. See photos, rates and availability on VRBO.' },
-  { name: 'Grand Caribe CH-4', note: 'Formerly Magical Island', url: 'https://www.vrbo.com/327107ha?noDates=true', blurb: 'Grand Caribe resort condo. See photos, rates and availability on VRBO.' },
-  { name: 'Sunset Caribe #1', url: 'https://www.vrbo.com/2335724?adultsCount=6&noDates=true', blurb: 'Sunset Caribe condo. See photos, rates and availability on VRBO.' },
-  { name: 'Sunset Caribe #2', url: 'https://www.vrbo.com/2334022?adultsCount=6', blurb: 'Sunset Caribe condo. See photos, rates and availability on VRBO.' },
-  { name: 'Sunset Caribe #3', url: 'https://www.vrbo.com/2337048?adultsCount=6&noDates=true', blurb: 'Sunset Caribe condo. See photos, rates and availability on VRBO.' },
-  { name: 'Belize Investment Condos', url: 'https://puestadelsolresort.com/', blurb: 'Condo ownership opportunities at Puesta del Sol Resort in Belize.', investment: true },
+// Details and photos come from Kelley's own VRBO listings (checked Nov 2026). Ratings change — refresh before launch.
+export const keyWestHomes = [
+  {
+    slug: 'waters-edge',
+    name: "The Water's Edge",
+    headline: 'Ocean breeze with coconut trees',
+    location: 'Truman Annex · Key West, Florida',
+    url: 'https://www.vrbo.com/327109ha?noDates=true',
+    bedrooms: '3', bathrooms: '4', sleeps: '8',
+    rating: '9.4', reviews: 44,
+    minStay: '1-week minimum stay',
+    description: [
+      'Three-bedroom, four-bathroom private home with a heated pool. Breathtaking sunsets can be seen from the third-floor deck overlooking the ocean.',
+      'Inside the guarded and gated Truman Annex, just three blocks from Sloppy Joe’s and the Duval Street entertainment. Watch sailboats and sunsets from the decks by day and feel refreshing ocean breezes at night.',
+    ],
+    amenities: ['Heated pool', 'Ocean-view deck', 'Full kitchen', 'Washer & dryer', 'Air conditioning', 'High-speed internet', 'Pet friendly'],
+    photoOrder: [1, 2, 4, 3, 5],
+    captions: ['The Water’s Edge', 'Top-floor deck with ocean views', 'Private heated pool', 'Main bedroom', 'Work space with high-speed internet'],
+  },
+  {
+    slug: 'truman-treasure',
+    name: 'Truman Treasure',
+    headline: 'Tropical state of mind',
+    location: 'Gated community · Key West, Florida',
+    url: 'https://www.vrbo.com/327107ha?noDates=true',
+    bedrooms: '3', bathrooms: '2½', sleeps: '5',
+    rating: '9.4', reviews: 32,
+    minStay: '30-night minimum stay',
+    description: [
+      'Private three-bedroom, two-and-a-half-bath home within a gated community, with access to a large private association pool. HD TVs in every bedroom and the living room, plus high-speed internet throughout.',
+      'Well stocked with towels, bedding and household appliances. Close to the ocean and beach — only three blocks from Sloppy Joe’s and Duval Street.',
+    ],
+    amenities: ['Association pool', 'Ocean view', 'Full kitchen', 'Washer & dryer', 'Air conditioning', 'High-speed internet'],
+    photoOrder: [3, 1, 2, 4, 5],
+    captions: ['Truman Treasure', 'Tropical garden path', 'Private patio with grill', 'Living and dining area', 'Kitchen'],
+  },
 ];
+
+// These VRBO links no longer resolve to a listing (they redirect to VRBO area searches), so the
+// new site asks guests to contact the office instead. Confirm status with the owner.
+export const belizeRentals = [
+  { name: 'Grande Caribe A-9' },
+  { name: 'Grand Caribe CH-4', note: 'Formerly Magical Island' },
+  { name: 'Sunset Caribe #1' },
+  { name: 'Sunset Caribe #2' },
+  { name: 'Sunset Caribe #3' },
+];
+
+export const belizeInvestment = { name: 'Belize Investment Condos', url: 'https://puestadelsolresort.com/' };
 
 /** Form submissions go to Web3Forms (free). Set PUBLIC_WEB3FORMS_KEY at build time to enable delivery. */
 export const formsKey: string = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';

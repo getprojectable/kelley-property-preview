@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/kelley-logo.png';
 import Icon from './Icon.astro';
-import { company, nav, url, vacationRentals } from '../data/site';
+import { belizeInvestment, company, keyWestHomes, nav, url } from '../data/site';
 const year = new Date().getFullYear();
 ---
 
@@ -31,9 +31,11 @@ const year = new Date().getFullYear();
     <div class="lg:col-span-3">
       <h3 class="text-sm font-semibold uppercase tracking-wider text-white">Tropical Vacation Rentals</h3>
       <ul class="mt-4 space-y-2.5 text-sm">
-        {vacationRentals.map((v) => (
-          <li><a class="inline-flex items-center gap-1.5 hover:text-white" href={v.url} target="_blank" rel="noopener">{v.name} <Icon name="external" class="size-3 opacity-60" /></a></li>
+        {keyWestHomes.map((v) => (
+          <li><a class="hover:text-white" href={url(`vacation-rentals/#${v.slug}`)}>{v.name} <span class="text-brand-100/50">· Key West</span></a></li>
         ))}
+        <li><a class="hover:text-white" href={url('vacation-rentals/#belize')}>Belize condos <span class="text-brand-100/50">· Grand Caribe &amp; Sunset Caribe</span></a></li>
+        <li><a class="inline-flex items-center gap-1.5 hover:text-white" href={belizeInvestment.url} target="_blank" rel="noopener">{belizeInvestment.name} <Icon name="external" class="size-3 opacity-60" /></a></li>
       </ul>
     </div>
 

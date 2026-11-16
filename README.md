@@ -60,4 +60,6 @@ Before launching on kelleyproperty.com:
 ## Notes
 
 - Street addresses and map pins come from the original listing pages. Two original pins pointed to a placeholder location, so those two were geocoded from their addresses instead.
+- Vacation rental photos and details come from Kelley's own VRBO listings (`src/data/site.ts`, `src/assets/vacation/`). Ratings and review counts are a snapshot, so refresh them before launch.
+- The Grande Caribe A-9 and Sunset Caribe #1–3 VRBO links on the original site no longer open a listing. Grand Caribe CH-4 used the same link as Truman Treasure. For these Belize condos the new site asks guests to call instead.
 - Map tiles come from © OpenStreetMap contributors.

@@ -1,54 +1,218 @@
 ---
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
-import { company, vacationRentals } from '../data/site';
+import { belizeInvestment, belizeRentals, company, keyWestHomes, url } from '../data/site';
 
-const gradients = [
-  'from-sky-400 to-cyan-600',
-  'from-teal-400 to-emerald-600',
-  'from-cyan-400 to-blue-600',
-  'from-amber-300 to-orange-500',
-  'from-orange-400 to-rose-500',
-  'from-rose-400 to-fuchsia-500',
-  'from-indigo-400 to-sky-600',
-  'from-emerald-400 to-teal-700',
-];
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/vacation/*/*.jpg', { eager: true });
+const photosFor = (slug: string, order: number[]) =>
+  order.map((n) => files[`../assets/vacation/${slug}/${String(n).padStart(2, '0')}.jpg`].default);
+
+const homes = await Promise.all(
+  keyWestHomes.map(async (h) => {
+    const photos = photosFor(h.slug, h.photoOrder);
+    const full = await Promise.all(photos.map((p) => getImage({ src: p, width: 1600, format: 'webp' })));
+    return { ...h, photos, full: full.map((f, i) => ({ src: f.src, caption: h.captions[i] })) };
+  }),
+);
+const hero = homes[0].photos[1];
+const perks = [
+  { icon: 'shield', title: 'Gated & secure', text: 'Both homes sit inside gated communities near the Truman Annex.' },
+  { icon: 'map', title: 'Walk to Duval Street', text: 'Three blocks to Sloppy Joe’s, restaurants and Old Town nightlife.' },
+  { icon: 'sun', title: 'Sunsets & sea breezes', text: 'Pools, decks and tropical gardens made for slow island days.' },
+  { icon: 'check', title: 'No hidden fees', text: 'Prices on VRBO include all fees. Book securely online.' },
+] as const;
 ---
 
-<Layout title="Tropical Vacation Rentals" description="Kelley Properties' tropical vacation rentals and Belize investment condos — book on VRBO.">
-  <section class="relative isolate overflow-hidden bg-gradient-to-br from-sky-900 via-cyan-800 to-teal-700">
-    <div class="pointer-events-none absolute -right-20 -top-32 size-[28rem] rounded-full bg-amber-300/40 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-40 left-10 size-[30rem] rounded-full bg-cyan-300/20 blur-3xl"></div>
-    <div class="container-x relative py-20 sm:py-28">
+<Layout title="Key West & Belize Vacation Rentals" description="Kelley Properties' vacation homes in Key West, Florida — The Water's Edge and Truman Treasure — plus Belize condos and investment opportunities." image={hero.src}>
+  <!-- Hero -->
+  <section class="relative isolate flex min-h-[78vh] items-end overflow-hidden bg-sky-950">
+    <Image src={hero} alt="Ocean-view deck at The Water's Edge in Key West" widths={[800, 1280, 1600]} sizes="100vw" class="absolute inset-0 -z-10 size-full object-cover" loading="eager" fetchpriority="high" />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-sky-950 via-sky-950/40 to-sky-950/10"></div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-sky-950/60 to-transparent"></div>
+    <div class="container-x pb-16 pt-32 sm:pb-24">
       <p class="eyebrow animate-fade-up !text-amber-200"><Icon name="sun" class="size-4" /> Tropical Vacation Rentals</p>
-      <h1 class="mt-4 max-w-3xl animate-fade-up text-4xl font-extrabold !text-white sm:text-6xl">Escape to the tropics.</h1>
-      <p class="mt-5 max-w-2xl animate-fade-up text-lg text-cyan-50/90">
-        Beyond Iowa, Kelley offers a collection of tropical vacation condos — plus investment opportunities in Belize.
-        Browse photos, check availability and book securely on VRBO.
+      <h1 class="mt-4 max-w-3xl animate-fade-up text-5xl font-extrabold leading-[1.02] !text-white sm:text-7xl">Your Key West escape.</h1>
+      <p class="mt-5 max-w-xl animate-fade-up text-lg text-white/90 [animation-delay:120ms]">
+        Two private homes steps from Duval Street, with pools, ocean-view decks and island breezes, plus condos and investment opportunities in Belize.
       </p>
+      <div class="mt-8 flex animate-fade-up flex-wrap gap-3 [animation-delay:200ms]">
+        {homes.map((h) => <a href={`#${h.slug}`} class="btn bg-white/95 text-sky-900 hover:bg-white">{h.name} <Icon name="arrow" class="size-4 rotate-90" /></a>)}
+        <a href="#belize" class="btn btn-ghost-light">Belize</a>
+      </div>
     </div>
-    <svg class="absolute inset-x-0 -bottom-px h-12 w-full text-white" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 48h1440V20c-120 16-240 24-360 16S840 4 720 4 480 28 360 32 120 24 0 12z"/></svg>
   </section>
 
-  <section class="container-x py-16 sm:py-20">
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {vacationRentals.map((v, i) => (
-        <a href={v.url} target="_blank" rel="noopener" class="reveal group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl" style={`transition-delay:${(i % 4) * 70}ms`}>
-          <div class={`relative flex h-40 items-end bg-gradient-to-br p-5 ${gradients[i % gradients.length]}`}>
-            <Icon name={v.investment ? 'building' : 'sun'} class="absolute right-5 top-5 size-10 text-white/60" />
-            <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">{v.investment ? 'Investment' : 'Book on VRBO'}</span>
-          </div>
-          <div class="flex flex-1 flex-col p-5">
-            <h2 class="text-lg font-bold">{v.name}</h2>
-            {v.note && <p class="text-xs text-slate-500">{v.note}</p>}
-            <p class="mt-2 text-sm text-slate-600">{v.blurb}</p>
-            <span class="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-semibold text-sky-700">
-              {v.investment ? 'Visit Puesta del Sol' : 'View availability'} <Icon name="external" class="size-4 transition group-hover:translate-x-0.5" />
-            </span>
-          </div>
-        </a>
+  <!-- Perks -->
+  <section class="border-b border-slate-200 bg-white">
+    <div class="container-x grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
+      {perks.map((p) => (
+        <div class="flex gap-4">
+          <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-sky-700"><Icon name={p.icon} class="size-5" /></span>
+          <div><h2 class="text-base font-bold">{p.title}</h2><p class="mt-1 text-sm text-slate-600">{p.text}</p></div>
+        </div>
       ))}
     </div>
-    <p class="mt-10 text-center text-sm text-slate-500">Questions about a vacation property? Call our office at <a class="font-semibold text-brand-700" href={company.phoneHref}>{company.phone}</a>.</p>
   </section>
+
+  <!-- Homes -->
+  {homes.map((h, hi) => (
+    <section id={h.slug} class:list={['scroll-mt-24 py-20 sm:py-24', hi % 2 === 1 && 'bg-sky-50/50']}>
+      <div class="container-x">
+        <div class="grid gap-3 overflow-hidden rounded-[2rem] sm:h-[520px] sm:grid-cols-4 sm:grid-rows-2">
+          {h.photos.map((p, i) => (
+            <button type="button" data-gallery={h.slug} data-index={i} class:list={['group relative overflow-hidden bg-slate-200', i === 0 ? 'aspect-[4/3] sm:col-span-2 sm:row-span-2 sm:aspect-auto' : 'hidden sm:block']} aria-label={`Open photo: ${h.captions[i]}`}>
+              <Image src={p} alt={h.captions[i]} widths={i === 0 ? [640, 1000, 1400] : [400, 700]} sizes={i === 0 ? '(min-width:640px) 50vw, 100vw' : '25vw'} class="size-full object-cover transition duration-700 group-hover:scale-105" />
+              <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-left text-sm font-medium text-white opacity-0 transition group-hover:opacity-100">{h.captions[i]}</span>
+            </button>
+          ))}
+        </div>
+        <button type="button" data-gallery={h.slug} data-index="0" class="btn btn-outline mt-4 !px-4"><Icon name="images" class="size-4" /> View photos</button>
+
+        <div class="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div>
+            <p class="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wider text-sky-700"><Icon name="pin" class="size-4" /> {h.location}</p>
+            <h2 class="mt-2 text-4xl font-extrabold sm:text-5xl">{h.name}</h2>
+            <p class="mt-2 text-xl italic text-slate-500">“{h.headline}”</p>
+
+            <dl class="mt-8 flex flex-wrap gap-3">
+              {[['bed', `${h.bedrooms} bedrooms`], ['bath', `${h.bathrooms} baths`], ['users', `Sleeps ${h.sleeps}`], ['clock', h.minStay]].map(([icon, label]) => (
+                <div class="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-ink"><Icon name={icon as any} class="size-4 text-sky-700" /> {label}</div>
+              ))}
+            </dl>
+
+            <div class="mt-8 space-y-4 text-lg leading-relaxed text-slate-600">
+              {h.description.map((d) => <p>{d}</p>)}
+            </div>
+
+            <h3 class="mt-10 text-lg font-bold">Popular amenities</h3>
+            <ul class="mt-4 flex flex-wrap gap-2">
+              {h.amenities.map((a) => <li class="inline-flex items-center gap-1.5 rounded-full bg-sky-100/70 px-3.5 py-1.5 text-sm font-medium text-sky-900"><Icon name="check" class="size-3.5" strokeWidth={2.5} /> {a}</li>)}
+            </ul>
+          </div>
+
+          <aside class="lg:sticky lg:top-28 lg:self-start">
+            <div class="card overflow-hidden">
+              <div class="bg-gradient-to-br from-sky-700 to-cyan-600 p-6 text-white">
+                <div class="flex items-center gap-3">
+                  <span class="rounded-xl bg-white px-3 py-1.5 font-display text-2xl font-extrabold text-sky-800">{h.rating}</span>
+                  <div>
+                    <p class="font-semibold">Loved by guests</p>
+                    <p class="text-sm text-white/80">{h.reviews} reviews on VRBO</p>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-3 p-6">
+                <a href={h.url} target="_blank" rel="noopener" class="btn w-full bg-sky-700 text-white hover:bg-sky-800">Check availability on VRBO <Icon name="external" class="size-4" /></a>
+                <a href={company.phoneHref} class="btn btn-outline w-full"><Icon name="phone" class="size-4" /> Questions? {company.phone}</a>
+                <p class="pt-1 text-center text-xs text-slate-500">{h.minStay} · Prices include all fees</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+      <script is:inline type="application/json" data-gallery-data={h.slug} set:html={JSON.stringify(h.full)} />
+    </section>
+  ))}
+
+  <!-- Belize -->
+  <section id="belize" class="relative isolate scroll-mt-24 overflow-hidden bg-gradient-to-br from-teal-800 via-cyan-800 to-sky-900 py-20 text-white sm:py-28">
+    <div class="pointer-events-none absolute -right-24 -top-24 -z-10 size-96 rounded-full bg-amber-300/30 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-32 left-0 -z-10 size-96 rounded-full bg-cyan-300/20 blur-3xl"></div>
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow !text-amber-200"><Icon name="sun" class="size-4" /> Belize</p>
+        <h2 class="mt-3 text-4xl font-extrabold !text-white sm:text-5xl">Caribbean condos in Belize</h2>
+        <p class="mt-4 text-lg text-cyan-50/85">Kelley also offers condos at Grand Caribe and Sunset Caribe. Call our office for availability and rates.</p>
+      </div>
+      <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {belizeRentals.map((b) => (
+          <div class="rounded-3xl border border-white/15 bg-white/10 p-6 backdrop-blur">
+            <Icon name="building" class="size-7 text-amber-200" />
+            <h3 class="mt-5 text-lg font-bold !text-white">{b.name}</h3>
+            {b.note && <p class="text-xs text-cyan-100/70">{b.note}</p>}
+          </div>
+        ))}
+      </div>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={company.phoneHref} class="btn bg-white text-sky-900 hover:bg-amber-50"><Icon name="phone" class="size-4" /> Call for availability</a>
+        <a href={url('contact/')} class="btn btn-ghost-light"><Icon name="mail" class="size-4" /> Send a message</a>
+      </div>
+
+      <a href={belizeInvestment.url} target="_blank" rel="noopener" class="group mt-14 flex flex-col gap-6 rounded-[2rem] bg-white p-8 text-ink shadow-2xl sm:flex-row sm:items-center sm:p-10">
+        <span class="inline-flex size-16 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-700"><Icon name="key" class="size-8" /></span>
+        <span class="flex-1">
+          <span class="block text-sm font-semibold uppercase tracking-wider text-amber-700">Investment opportunity</span>
+          <span class="mt-1 block font-display text-2xl font-extrabold">{belizeInvestment.name}</span>
+          <span class="mt-1 block text-slate-600">Own a piece of paradise in Belize — learn about condo ownership.</span>
+        </span>
+        <span class="inline-flex items-center gap-2 font-semibold text-sky-700">Learn more <Icon name="external" class="size-4 transition group-hover:translate-x-0.5" /></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <dialog id="vr-lightbox" class="m-0 h-dvh max-h-none w-screen max-w-none bg-neutral-950 p-0 text-white backdrop:bg-black/90" aria-label="Photo viewer">
+    <div class="flex h-full flex-col">
+      <div class="flex items-center justify-between gap-4 p-4">
+        <p class="text-sm text-white/70"><span data-caption></span> · <span data-count></span></p>
+        <button type="button" data-close class="inline-flex size-11 items-center justify-center rounded-full hover:bg-white/10" aria-label="Close"><Icon name="x" class="size-6" /></button>
+      </div>
+      <div class="lb-stage relative flex min-h-0 flex-1 items-center justify-center px-4 pb-6 sm:px-20">
+        <img data-img alt="" class="max-h-full max-w-full select-none rounded-lg object-contain" />
+        <button type="button" data-prev class="absolute left-2 top-1/2 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 sm:left-6" aria-label="Previous photo"><Icon name="left" class="size-6" /></button>
+        <button type="button" data-next class="absolute right-2 top-1/2 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 sm:right-6" aria-label="Next photo"><Icon name="right" class="size-6" /></button>
+      </div>
+    </div>
+  </dialog>
 </Layout>
+
+<script>
+  type Photo = { src: string; caption: string };
+  const galleries = new Map<string, Photo[]>();
+  document.querySelectorAll<HTMLScriptElement>('[data-gallery-data]').forEach((s) => galleries.set(s.dataset.galleryData!, JSON.parse(s.textContent || '[]')));
+
+  const dlg = document.getElementById('vr-lightbox') as HTMLDialogElement;
+  const img = dlg.querySelector<HTMLImageElement>('[data-img]')!;
+  const cap = dlg.querySelector('[data-caption]')!;
+  const cnt = dlg.querySelector('[data-count]')!;
+  let list: Photo[] = [];
+  let i = 0;
+  const show = (n: number) => {
+    i = (n + list.length) % list.length;
+    img.src = list[i].src;
+    img.alt = list[i].caption;
+    cap.textContent = list[i].caption;
+    cnt.textContent = `${i + 1} / ${list.length}`;
+    new Image().src = list[(i + 1) % list.length].src;
+  };
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((b) =>
+    b.addEventListener('click', () => {
+      list = galleries.get(b.dataset.gallery!) ?? [];
+      if (!list.length) return;
+      show(Number(b.dataset.index || 0));
+      dlg.showModal();
+    }),
+  );
+  dlg.querySelector('[data-close]')!.addEventListener('click', () => dlg.close());
+  dlg.querySelector('[data-prev]')!.addEventListener('click', () => show(i - 1));
+  dlg.querySelector('[data-next]')!.addEventListener('click', () => show(i + 1));
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+    if (e.key === 'Escape') { e.preventDefault(); dlg.close(); }
+  });
+  dlg.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    if (t === dlg || t.classList.contains('lb-stage')) dlg.close();
+  });
+  let x0: number | null = null;
+  dlg.addEventListener('touchstart', (e) => (x0 = e.touches[0].clientX), { passive: true });
+  dlg.addEventListener('touchend', (e) => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) show(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  });
+</script>

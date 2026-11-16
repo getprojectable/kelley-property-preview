@@ -6,9 +6,6 @@ import Icon from '../components/Icon.astro';
 import PropertyCard from '../components/PropertyCard.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { company, url } from '../data/site';
-import heroMain from '../assets/properties/monarch-estate-apartments/01.jpg';
-import heroTop from '../assets/properties/colonial-house/01.jpg';
-import heroBottom from '../assets/properties/peartree-apartments/01.jpg';
 import sideImg from '../assets/properties/village-1-bedroom-1-bath-units/01.jpg';
 import sideImg2 from '../assets/properties/colonial-house/06.jpg';
 import vacationImg from '../assets/vacation/waters-edge/04.jpg';
@@ -24,6 +21,13 @@ const cityImage = {
 };
 const types = [...new Set(all.map((p) => p.data.type))];
 
+// Scrolling hero collage: real listing photos, shown small so their modest resolution stays crisp.
+const uniq = <T extends { src: string }>(imgs: T[]) => [...new Map(imgs.map((i) => [i.src, i])).values()];
+const photoPool = all.filter((p) => p.id !== '6800-devonshire-dr-ne');
+const exteriors = uniq(photoPool.map((p) => p.data.images[0]));
+// Each row starts at a different point in the list so neighbouring rows don't line up.
+const heroRows = [0, 4, 8, 12].map((offset) => [...exteriors.slice(offset % exteriors.length), ...exteriors.slice(0, offset % exteriors.length)]);
+
 const reasons = [
   { icon: 'home', title: 'Something for Everyone', text: 'One-bedroom apartments to single-family homes — 1, 2 and 3 bedroom options in neighborhoods all over the metro.' },
   { icon: 'star', title: 'Best Rentals, Lowest Prices', text: 'We work hard to keep quality high and rents affordable in Cedar Rapids, Marion and Hiawatha.' },
@@ -33,46 +37,34 @@ const reasons = [
 ---
 
 <Layout>
-  <!-- Hero: split layout so the modest-resolution listing photos are never stretched across wide screens. -->
+  <!-- Hero: rows of listing photos drifting across the background. -->
   <section class="relative isolate overflow-hidden bg-brand-950">
-    <div class="pointer-events-none absolute -left-40 top-0 -z-10 size-[36rem] rounded-full bg-brand-700/30 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-40 right-0 -z-10 size-[30rem] rounded-full bg-brand-500/20 blur-3xl"></div>
+    <div class="absolute inset-0 -z-20 flex -rotate-3 scale-110 flex-col justify-center gap-3" aria-hidden="true">
+      {heroRows.map((row, r) => (
+        <div class="overflow-hidden">
+          <div class:list={['marquee flex gap-3', r % 2 === 1 && 'marquee-reverse']} style={`--marquee-duration:${90 + r * 12}s`}>
+            {[...row, ...row].map((img) => (
+              <Image src={img} alt="" widths={[256, 400]} sizes="256px" class="aspect-[4/3] w-44 shrink-0 rounded-xl object-cover sm:w-56 lg:w-64" loading="eager" />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-brand-950/95 via-brand-950/75 to-brand-950/25"></div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-brand-950/70 via-transparent to-brand-950/40"></div>
 
-    <div class="container-x grid items-center gap-14 pb-28 pt-16 sm:pt-20 lg:grid-cols-2 lg:gap-16 lg:pb-36 lg:pt-24">
-      <div>
+    <div class="container-x pb-32 pt-20 sm:pt-28 lg:pb-40 lg:pt-32">
+      <div class="max-w-2xl">
         <p class="eyebrow animate-fade-up !text-brand-300"><span class="h-px w-8 bg-brand-400"></span> Cedar Rapids · Marion · Hiawatha</p>
-        <h1 class="mt-5 animate-fade-up text-4xl font-extrabold leading-[1.05] !text-white sm:text-6xl">
+        <h1 class="mt-5 animate-fade-up text-4xl font-extrabold leading-[1.05] !text-white sm:text-6xl lg:text-7xl">
           Find a place that feels like <span class="text-brand-300">home</span>.
         </h1>
-        <p class="mt-6 max-w-xl animate-fade-up text-lg leading-relaxed text-white/85 [animation-delay:120ms]">
+        <p class="mt-6 max-w-xl animate-fade-up text-lg leading-relaxed text-white/90 [animation-delay:120ms]">
           {`Quality apartments, townhomes and houses at prices that make sense. ${company.units} units and ${company.yearsInBusiness} years serving Eastern Iowa — we truly have `}<em>"{company.tagline}."</em>
         </p>
         <div class="mt-9 flex animate-fade-up flex-wrap gap-3 [animation-delay:200ms]">
           <a href={url('properties/')} class="btn btn-primary !px-7 !py-3.5 text-base">Browse Rentals <Icon name="arrow" class="size-4" /></a>
-          <a href={company.phoneHref} class="btn btn-ghost-light !px-7 !py-3.5 text-base"><Icon name="phone" class="size-4" /> {company.phone}</a>
-        </div>
-      </div>
-
-      <div class="relative animate-fade-up [animation-delay:150ms]">
-        <div class="grid grid-cols-5 gap-4">
-          <a href={url('properties/monarch-estate-apartments/')} class="group col-span-3 overflow-hidden rounded-[1.75rem] shadow-2xl shadow-black/30 ring-1 ring-white/10">
-            <Image src={heroMain} alt="Monarch Estates apartments in Cedar Rapids" widths={[480, 720, 1000]} sizes="(min-width:1024px) 34vw, 60vw" class="aspect-[3/4] size-full object-cover transition duration-700 group-hover:scale-105" loading="eager" fetchpriority="high" />
-          </a>
-          <div class="col-span-2 flex flex-col gap-4 pt-10">
-            <a href={url('properties/colonial-house/')} class="group overflow-hidden rounded-[1.5rem] shadow-xl shadow-black/30 ring-1 ring-white/10">
-              <Image src={heroTop} alt="Colonial House apartments" widths={[320, 520]} sizes="(min-width:1024px) 22vw, 40vw" class="aspect-square size-full object-cover transition duration-700 group-hover:scale-105" loading="eager" />
-            </a>
-            <a href={url('properties/peartree-apartments/')} class="group overflow-hidden rounded-[1.5rem] shadow-xl shadow-black/30 ring-1 ring-white/10">
-              <Image src={heroBottom} alt="Peartree apartments" widths={[320, 520]} sizes="(min-width:1024px) 22vw, 40vw" class="aspect-[4/5] size-full object-cover transition duration-700 group-hover:scale-105" loading="eager" />
-            </a>
-          </div>
-        </div>
-        <div class="absolute -bottom-6 left-4 flex items-center gap-3 rounded-2xl bg-white p-4 pr-6 shadow-2xl sm:-left-6">
-          <span class="inline-flex size-11 items-center justify-center rounded-xl bg-brand-600 text-white"><Icon name="home" class="size-5" /></span>
-          <span>
-            <span class="block font-display text-2xl font-extrabold leading-none text-brand-800">{company.units}</span>
-            <span class="text-xs font-medium text-slate-500">rental units to choose from</span>
-          </span>
+          <a href={company.phoneHref} class="btn btn-ghost-light !px-7 !py-3.5 text-base backdrop-blur"><Icon name="phone" class="size-4" /> {company.phone}</a>
         </div>
       </div>
     </div>

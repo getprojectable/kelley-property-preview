@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import FormShell from '../components/FormShell.astro';
+import Icon from '../components/Icon.astro';
+import { company } from '../data/site';
+import bg from '../assets/properties/lancer/01.jpg';
+
+const floors = ['Main', 'Basement', '2nd Floor'];
+const locations = ['Bathroom', 'Bedroom', 'Closet', 'Common Room', 'Dining Area', 'Exterior', 'Garage', 'Kitchen', 'Laundry Room', 'Other'];
+const items = ['Air Conditioning', 'Appliances', 'Building Exterior', 'Dishwasher', 'Door', 'Dryer', 'Electrical', 'Faucets', 'Glass or Window', 'Gutters', 'Heating', 'Insects or Rodents', 'Keys', 'Landscaping or Grounds', 'Lights', 'Locks', 'Miscellaneous', 'Paint', 'Plumbing', 'Sink', 'Stove/Oven', 'Thermostat', 'Toilet', 'Tub', 'Washer', 'Water Leak', 'Water Other', 'Water Heater', 'Window', 'Window Screen', 'Other'];
+---
+
+<Layout title="Service Request" description="Kelley Properties residents can submit a maintenance or service request online.">
+  <PageHero eyebrow="Residents" title="Submit a service request" lead="Let us know what needs attention and our maintenance team will follow up. It only takes a couple of minutes." image={bg} />
+
+  <section class="container-x grid gap-10 py-16 lg:grid-cols-[minmax(0,1fr)_340px]">
+    <div class="card p-6 sm:p-10">
+      <FormShell subject="Service Request" submitLabel="Submit request">
+        <fieldset>
+          <legend class="text-lg font-bold text-ink">Your information</legend>
+          <div class="mt-5 grid gap-5 sm:grid-cols-2">
+            <div><label class="field-label" for="sr-first">First name <span class="text-red-500">*</span></label><input id="sr-first" name="first_name" required autocomplete="given-name" class="field" /></div>
+            <div><label class="field-label" for="sr-last">Last name <span class="text-red-500">*</span></label><input id="sr-last" name="last_name" required autocomplete="family-name" class="field" /></div>
+            <div class="sm:col-span-2 grid gap-5 sm:grid-cols-[1fr_8rem]">
+              <div><label class="field-label" for="sr-street">Street address <span class="text-red-500">*</span></label><input id="sr-street" name="street" required autocomplete="address-line1" class="field" /></div>
+              <div><label class="field-label" for="sr-apt">Apt #</label><input id="sr-apt" name="apt" autocomplete="address-line2" class="field" /></div>
+            </div>
+            <div><label class="field-label" for="sr-city">City <span class="text-red-500">*</span></label>
+              <select id="sr-city" name="city" required class="field"><option value="">Select…</option><option>Cedar Rapids</option><option>Marion</option><option>Hiawatha</option></select>
+            </div>
+            <div><label class="field-label" for="sr-date">Date <span class="text-red-500">*</span></label><input id="sr-date" name="date" type="date" required class="field" /></div>
+            <div><label class="field-label" for="sr-phone">Phone <span class="text-red-500">*</span></label><input id="sr-phone" name="phone" type="tel" required autocomplete="tel" class="field" /></div>
+            <div><label class="field-label" for="sr-phone2">Work / cell phone</label><input id="sr-phone2" name="alt_phone" type="tel" class="field" /></div>
+            <div class="sm:col-span-2"><label class="field-label" for="sr-email">Email <span class="text-red-500">*</span></label><input id="sr-email" name="email" type="email" required autocomplete="email" class="field" /></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="mt-10 border-t border-slate-200 pt-8">
+          <legend class="text-lg font-bold text-ink">The problem</legend>
+          <div class="mt-5 grid gap-5 sm:grid-cols-3">
+            <div><label class="field-label" for="sr-floor">Floor level <span class="text-red-500">*</span></label>
+              <select id="sr-floor" name="floor_level" required class="field"><option value="">Select…</option>{floors.map((f) => <option>{f}</option>)}</select>
+            </div>
+            <div><label class="field-label" for="sr-loc">Location <span class="text-red-500">*</span></label>
+              <select id="sr-loc" name="location" required class="field"><option value="">Select…</option>{locations.map((f) => <option>{f}</option>)}</select>
+            </div>
+            <div><label class="field-label" for="sr-item">Problem item <span class="text-red-500">*</span></label>
+              <select id="sr-item" name="problem_item" required class="field"><option value="">Select…</option>{items.map((f) => <option>{f}</option>)}</select>
+            </div>
+            <div class="sm:col-span-3"><label class="field-label" for="sr-desc">Description of problem <span class="text-red-500">*</span></label>
+              <textarea id="sr-desc" name="description" rows="5" required class="field" placeholder="Please describe the issue, when it started, and anything we should know before entering."></textarea>
+            </div>
+            <label class="flex items-start gap-3 text-sm text-slate-700 sm:col-span-3">
+              <input type="checkbox" name="permission_to_enter" value="Yes" class="mt-0.5 size-4 accent-brand-600" />
+              Maintenance may enter my unit if I'm not home.
+            </label>
+          </div>
+        </fieldset>
+      </FormShell>
+    </div>
+
+    <aside class="space-y-6">
+      <div class="rounded-3xl bg-red-50 p-6 ring-1 ring-red-100">
+        <h2 class="flex items-center gap-2 text-lg font-bold !text-red-900"><Icon name="phone" class="size-5" /> Emergency?</h2>
+        <p class="mt-2 text-sm text-red-900/80">For fire, flooding, gas smells or anything urgent, call 911 if needed and then call our office right away — don't wait on an online request.</p>
+        <a href={company.phoneHref} class="btn mt-4 w-full bg-red-600 text-white hover:bg-red-700">{company.phone}</a>
+      </div>
+      <div class="card p-6">
+        <h2 class="text-lg font-bold">What happens next</h2>
+        <ol class="mt-4 space-y-4 text-sm text-slate-600">
+          {['Your request is sent straight to the Kelley office.', 'We review it and schedule a maintenance visit.', 'Our team contacts you if we need more details.'].map((s, i) => (
+            <li class="flex gap-3"><span class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">{i + 1}</span>{s}</li>
+          ))}
+        </ol>
+      </div>
+    </aside>
+  </section>
+</Layout>
+
+<script>
+  const d = document.getElementById('sr-date') as HTMLInputElement;
+  const setToday = () => {
+    const now = new Date();
+    d.value = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  };
+  setToday();
+  d.form?.addEventListener('reset', () => setTimeout(setToday));
+</script>

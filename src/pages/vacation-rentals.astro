@@ -1,0 +1,54 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { company, vacationRentals } from '../data/site';
+
+const gradients = [
+  'from-sky-400 to-cyan-600',
+  'from-teal-400 to-emerald-600',
+  'from-cyan-400 to-blue-600',
+  'from-amber-300 to-orange-500',
+  'from-orange-400 to-rose-500',
+  'from-rose-400 to-fuchsia-500',
+  'from-indigo-400 to-sky-600',
+  'from-emerald-400 to-teal-700',
+];
+---
+
+<Layout title="Tropical Vacation Rentals" description="Kelley Properties' tropical vacation rentals and Belize investment condos — book on VRBO.">
+  <section class="relative isolate overflow-hidden bg-gradient-to-br from-sky-900 via-cyan-800 to-teal-700">
+    <div class="pointer-events-none absolute -right-20 -top-32 size-[28rem] rounded-full bg-amber-300/40 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-40 left-10 size-[30rem] rounded-full bg-cyan-300/20 blur-3xl"></div>
+    <div class="container-x relative py-20 sm:py-28">
+      <p class="eyebrow animate-fade-up !text-amber-200"><Icon name="sun" class="size-4" /> Tropical Vacation Rentals</p>
+      <h1 class="mt-4 max-w-3xl animate-fade-up text-4xl font-extrabold !text-white sm:text-6xl">Escape to the tropics.</h1>
+      <p class="mt-5 max-w-2xl animate-fade-up text-lg text-cyan-50/90">
+        Beyond Iowa, Kelley offers a collection of tropical vacation condos — plus investment opportunities in Belize.
+        Browse photos, check availability and book securely on VRBO.
+      </p>
+    </div>
+    <svg class="absolute inset-x-0 -bottom-px h-12 w-full text-white" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 48h1440V20c-120 16-240 24-360 16S840 4 720 4 480 28 360 32 120 24 0 12z"/></svg>
+  </section>
+
+  <section class="container-x py-16 sm:py-20">
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {vacationRentals.map((v, i) => (
+        <a href={v.url} target="_blank" rel="noopener" class="reveal group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl" style={`transition-delay:${(i % 4) * 70}ms`}>
+          <div class={`relative flex h-40 items-end bg-gradient-to-br p-5 ${gradients[i % gradients.length]}`}>
+            <Icon name={v.investment ? 'building' : 'sun'} class="absolute right-5 top-5 size-10 text-white/60" />
+            <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">{v.investment ? 'Investment' : 'Book on VRBO'}</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-lg font-bold">{v.name}</h2>
+            {v.note && <p class="text-xs text-slate-500">{v.note}</p>}
+            <p class="mt-2 text-sm text-slate-600">{v.blurb}</p>
+            <span class="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-semibold text-sky-700">
+              {v.investment ? 'Visit Puesta del Sol' : 'View availability'} <Icon name="external" class="size-4 transition group-hover:translate-x-0.5" />
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+    <p class="mt-10 text-center text-sm text-slate-500">Questions about a vacation property? Call our office at <a class="font-semibold text-brand-700" href={company.phoneHref}>{company.phone}</a>.</p>
+  </section>
+</Layout>

@@ -1,0 +1,97 @@
+---
+import Icon from './Icon.astro';
+import { formsKey } from '../data/site';
+
+interface Props {
+  subject: string;
+  submitLabel?: string;
+  class?: string;
+  id?: string;
+}
+const { subject, submitLabel = 'Send', class: className = '', id } = Astro.props;
+---
+
+<form id={id} data-form data-key={formsKey} class:list={['kp-form', className]} novalidate>
+  <input type="hidden" name="subject" value={`Website: ${subject}`} />
+  <input type="hidden" name="from_name" value="Kelley Properties Website" />
+  <!-- Spam honeypot: real visitors never see or tick this. -->
+  <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
+
+  <slot />
+
+  <div class="mt-6 flex flex-wrap items-center gap-4">
+    <button type="submit" class="btn btn-primary !px-8 !py-3.5">
+      <span data-label class="inline-flex items-center gap-2"><Icon name="send" class="size-4" /> {submitLabel}</span>
+      <span data-spinner class="hidden size-4 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
+    </button>
+    <p class="text-xs text-slate-500">Fields marked <span class="text-red-500">*</span> are required.</p>
+  </div>
+
+  <div data-status role="status" aria-live="polite" class="mt-5 hidden rounded-2xl p-4 text-sm"></div>
+</form>
+
+<script>
+  const ENDPOINT = 'https://api.web3forms.com/submit';
+
+  function show(form: HTMLFormElement, kind: 'ok' | 'err' | 'info', html: string) {
+    const box = form.querySelector<HTMLElement>('[data-status]')!;
+    box.className = 'mt-5 rounded-2xl p-4 text-sm ' + ({
+      ok: 'bg-brand-50 text-brand-900 ring-1 ring-brand-200',
+      err: 'bg-red-50 text-red-800 ring-1 ring-red-200',
+      info: 'bg-amber-50 text-amber-900 ring-1 ring-amber-200',
+    })[kind];
+    box.innerHTML = html;
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function busy(form: HTMLFormElement, on: boolean) {
+    const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    btn.disabled = on;
+    btn.querySelector('[data-label]')!.classList.toggle('hidden', on);
+    btn.querySelector('[data-spinner]')!.classList.toggle('hidden', !on);
+  }
+
+  document.querySelectorAll<HTMLFormElement>('form[data-form]').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        form.reportValidity();
+        return;
+      }
+      const data = Object.fromEntries(
+        [...new FormData(form).entries()].reduce((m, [k, v]) => {
+          const val = String(v);
+          m.set(k, m.has(k) ? `${m.get(k)}, ${val}` : val);
+          return m;
+        }, new Map<string, string>()),
+      );
+      if (data.botcheck) return;
+      const key = form.dataset.key;
+
+      busy(form, true);
+      try {
+        if (!key) {
+          // Preview build without a form key: simulate success so the flow can be demoed.
+          await new Promise((r) => setTimeout(r, 700));
+          form.reset();
+          show(form, 'info', '<strong>Thanks! (Preview mode)</strong><br>This is a design preview, so the message was not delivered. On the live site it will be emailed to the Kelley office immediately.');
+          return;
+        }
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ ...data, access_key: key }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.success) throw new Error(json.message || 'Request failed');
+        form.reset();
+        show(form, 'ok', '<strong>Thank you — we received your submission.</strong><br>A member of our team will be in touch shortly. For urgent issues please call (319) 365-3156.');
+      } catch {
+        show(form, 'err', '<strong>Sorry, something went wrong.</strong><br>Please try again or call us at <a class="underline" href="tel:+13193653156">(319) 365-3156</a>.');
+      } finally {
+        busy(form, false);
+      }
+    });
+  });
+</script>

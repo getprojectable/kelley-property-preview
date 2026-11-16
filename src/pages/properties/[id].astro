@@ -1,0 +1,250 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import PropertyCard from '../../components/PropertyCard.astro';
+import FormShell from '../../components/FormShell.astro';
+import { company, url } from '../../data/site';
+
+export const getStaticPaths = (async () => {
+  const all = await getCollection('properties');
+  return all.map((property) => ({ params: { id: property.id }, props: { property, all } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  property: CollectionEntry<'properties'>;
+  all: CollectionEntry<'properties'>[];
+}
+const { property, all } = Astro.props;
+const p = property.data;
+const { Content } = await render(property);
+
+const full = await Promise.all(p.images.map((img) => getImage({ src: img, width: Math.min(img.width, 1400), format: 'webp' })));
+const ogImage = (await getImage({ src: p.images[0], width: 1200, format: 'jpg' })).src;
+const similar = all
+  .filter((o) => o.id !== property.id)
+  .sort((a, b) => Number(b.data.city === p.city) - Number(a.data.city === p.city) || Number(b.data.type === p.type) - Number(a.data.type === p.type))
+  .slice(0, 3);
+
+type IconName = import('astro/types').ComponentProps<typeof Icon>['name'];
+const facts: { icon: IconName; label: string; value: string }[] = [
+  { icon: 'home', label: 'Type', value: p.type },
+  ...(p.beds ? [{ icon: 'bed' as const, label: 'Bedrooms', value: String(p.beds) }] : []),
+  ...(p.baths ? [{ icon: 'bath' as const, label: 'Bathrooms', value: String(p.baths) }] : []),
+  { icon: 'car', label: 'Garage', value: p.garage ? (p.features.some((f) => /extra cost/i.test(f)) ? 'Available' : 'Included') : '—' },
+];
+const point = p.location ? { id: property.id, title: p.title, lat: p.location.lat, lng: p.location.lng, exact: p.location.exact } : null;
+---
+
+<Layout title={`${p.title} – ${p.city}`} description={`${p.title} in ${p.city}, Iowa. ${p.summary} ${p.beds ? `${p.beds} bed, ${p.baths} bath ${p.type.toLowerCase()}.` : ''}`} image={ogImage}>
+  <div class="container-x pt-8">
+    <nav aria-label="Breadcrumb" class="text-sm text-slate-500">
+      <ol class="flex flex-wrap items-center gap-1.5">
+        <li><a class="hover:text-brand-700" href={url()}>Home</a></li>
+        <li aria-hidden="true"><Icon name="right" class="size-3.5" /></li>
+        <li><a class="hover:text-brand-700" href={url('properties/')}>Rentals</a></li>
+        <li aria-hidden="true"><Icon name="right" class="size-3.5" /></li>
+        <li class="font-medium text-ink" aria-current="page">{p.title}</li>
+      </ol>
+    </nav>
+
+    <div class="mt-5 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip">{p.type}</span>
+          {p.available && <span class="chip !bg-brand-600 !text-white">Available</span>}
+        </div>
+        <h1 class="mt-3 text-3xl font-extrabold sm:text-5xl">{p.title}</h1>
+        <p class="mt-2 flex items-center gap-1.5 text-slate-600"><Icon name="pin" class="size-4 text-brand-600" /> {p.address ?? `${p.city}, Iowa`}</p>
+      </div>
+      <button type="button" onclick="window.print()" class="btn btn-outline !px-4 print:hidden"><Icon name="printer" class="size-4" /> Print</button>
+    </div>
+
+    <!-- Gallery -->
+    <div class="mt-8 grid h-[280px] gap-3 overflow-hidden rounded-3xl sm:h-[440px] sm:grid-cols-4 sm:grid-rows-2">
+      {p.images.slice(0, 5).map((img, i) => (
+        <button type="button" data-open={i} class:list={['group relative overflow-hidden bg-slate-100', i === 0 ? 'sm:col-span-2 sm:row-span-2' : 'hidden sm:block', p.images.length === 1 && 'sm:col-span-4']} aria-label={`Open photo ${i + 1} of ${p.images.length}`}>
+          <Image src={img} alt={`${p.title} photo ${i + 1}`} widths={i === 0 ? [640, 1000] : [320, 500]} sizes={i === 0 ? '(min-width:640px) 50vw, 100vw' : '25vw'} class="size-full object-cover transition duration-500 group-hover:scale-105" loading={i === 0 ? 'eager' : 'lazy'} />
+          {i === 4 && p.images.length > 5 && <span class="absolute inset-0 flex items-center justify-center bg-black/45 text-lg font-semibold text-white">+{p.images.length - 5} more</span>}
+        </button>
+      ))}
+    </div>
+    {p.images.length > 1 && (
+      <button type="button" data-open="0" class="btn btn-outline mt-4 !px-4 print:hidden"><Icon name="images" class="size-4" /> View all {p.images.length} photos</button>
+    )}
+  </div>
+
+  <div class="container-x grid gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_380px]">
+    <div class="min-w-0">
+      <dl class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {facts.map((f) => (
+          <div class="rounded-2xl border border-slate-200 p-4">
+            <dt class="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-500"><Icon name={f.icon} class="size-4 text-brand-600" /> {f.label}</dt>
+            <dd class="mt-1 text-lg font-bold text-ink">{f.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <section class="mt-12">
+        <h2 class="text-2xl font-bold">About this property</h2>
+        <div class="prose-kelley mt-4 text-lg text-slate-600 [&_p]:mb-0 [&_p]:whitespace-pre-line"><Content /></div>
+      </section>
+
+      {p.features.length > 0 && (
+        <section class="mt-12">
+          <h2 class="text-2xl font-bold">Amenities</h2>
+          <ul class="mt-5 grid gap-3 sm:grid-cols-2">
+            {p.features.map((f) => (
+              <li class="flex items-center gap-3 rounded-2xl bg-brand-50/60 px-4 py-3 text-ink">
+                <span class="inline-flex size-7 items-center justify-center rounded-full bg-brand-600 text-white"><Icon name="check" class="size-4" strokeWidth={2.5} /></span>
+                {f}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {p.schools && (
+        <section class="mt-12">
+          <h2 class="text-2xl font-bold">Nearby schools</h2>
+          <div class="mt-5 grid gap-4 sm:grid-cols-3">
+            {[['Elementary', p.schools.elementary], ['Middle', p.schools.middle], ['High', p.schools.high]].map(([l, v]) => (
+              <div class="rounded-2xl border border-slate-200 p-5">
+                <Icon name="school" class="size-6 text-brand-600" />
+                <p class="mt-3 text-xs font-medium uppercase tracking-wide text-slate-500">{l} School</p>
+                <p class="mt-0.5 font-semibold text-ink">{v}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {point && (
+        <section class="mt-12 print:hidden">
+          <h2 class="text-2xl font-bold">Location</h2>
+          <div id="detail-map" data-point={JSON.stringify(point)} class="mt-5 h-80 overflow-hidden rounded-3xl border border-slate-200"></div>
+          {!point.exact && <p class="mt-3 text-xs text-slate-500">Map shows the general area. Call {company.phone} for the exact address and to schedule a showing.</p>}
+        </section>
+      )}
+    </div>
+
+    <aside class="lg:sticky lg:top-28 lg:self-start">
+      <div class="card overflow-hidden">
+        <div class="bg-brand-950 p-6 text-white">
+          <p class="text-sm text-brand-200">Monthly rent</p>
+          <p class="mt-1 font-display text-3xl font-extrabold">{p.price}</p>
+          <div class="mt-5 grid grid-cols-2 gap-2">
+            <a href={company.phoneHref} class="btn bg-brand-500 !px-3 text-white hover:bg-brand-400"><Icon name="phone" class="size-4" /> Call</a>
+            <a href={url('apply/')} class="btn bg-white !px-3 text-brand-800 hover:bg-brand-50"><Icon name="file" class="size-4" /> Apply</a>
+          </div>
+        </div>
+        <div class="p-6">
+          <h2 class="text-lg font-bold">Request info or a showing</h2>
+          <FormShell subject={`Inquiry – ${p.title}`} submitLabel="Send request" class="mt-4 grid gap-4">
+            <input type="hidden" name="property" value={`${p.title} (${p.city})`} />
+            <div>
+              <label class="field-label" for="i-name">Name <span class="text-red-500">*</span></label>
+              <input id="i-name" name="name" required autocomplete="name" class="field" />
+            </div>
+            <div>
+              <label class="field-label" for="i-email">Email <span class="text-red-500">*</span></label>
+              <input id="i-email" name="email" type="email" required autocomplete="email" class="field" />
+            </div>
+            <div>
+              <label class="field-label" for="i-phone">Phone</label>
+              <input id="i-phone" name="phone" type="tel" autocomplete="tel" class="field" />
+            </div>
+            <div>
+              <label class="field-label" for="i-msg">Message</label>
+              <textarea id="i-msg" name="message" rows="3" class="field">I'm interested in {p.title}. Please contact me about availability and pricing.</textarea>
+            </div>
+          </FormShell>
+        </div>
+      </div>
+      <p class="mt-4 flex items-start gap-2 px-2 text-xs text-slate-500"><Icon name="clock" class="mt-0.5 size-4 shrink-0" /> Office open Mon–Fri 8–5 and Sat 9–3. {company.hoursNote}</p>
+    </aside>
+  </div>
+
+  <section class="bg-sand py-20 print:hidden">
+    <div class="container-x">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 class="text-3xl font-extrabold">You might also like</h2>
+        <a href={url('properties/')} class="btn btn-outline">All rentals <Icon name="arrow" class="size-4" /></a>
+      </div>
+      <div class="mt-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+        {similar.map((s) => <PropertyCard property={s} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <dialog id="lightbox" class="m-0 h-dvh max-h-none w-screen max-w-none bg-neutral-950 p-0 text-white backdrop:bg-black/90" aria-label={`${p.title} photos`}>
+    <div class="flex h-full flex-col">
+      <div class="flex items-center justify-between p-4">
+        <p class="text-sm text-white/70"><span id="lb-index">1</span> / {p.images.length}</p>
+        <button type="button" data-close class="inline-flex size-11 items-center justify-center rounded-full hover:bg-white/10" aria-label="Close"><Icon name="x" class="size-6" /></button>
+      </div>
+      <div class="lb-stage relative flex min-h-0 flex-1 items-center justify-center px-4 pb-6 sm:px-20">
+        <img id="lb-img" src={full[0].src} alt="" class="max-h-full max-w-full select-none rounded-lg object-contain" />
+        <button type="button" data-prev class="absolute left-2 top-1/2 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 sm:left-6" aria-label="Previous photo"><Icon name="left" class="size-6" /></button>
+        <button type="button" data-next class="absolute right-2 top-1/2 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 sm:right-6" aria-label="Next photo"><Icon name="right" class="size-6" /></button>
+      </div>
+    </div>
+  </dialog>
+  <script is:inline type="application/json" id="gallery-data" set:html={JSON.stringify(full.map((f) => f.src))} />
+</Layout>
+
+<script>
+  const srcs: string[] = JSON.parse(document.getElementById('gallery-data')!.textContent || '[]');
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = document.getElementById('lb-img') as HTMLImageElement;
+  const idx = document.getElementById('lb-index')!;
+  let i = 0;
+  const show = (n: number) => {
+    i = (n + srcs.length) % srcs.length;
+    img.src = srcs[i];
+    img.alt = `Photo ${i + 1}`;
+    idx.textContent = String(i + 1);
+    [srcs[(i + 1) % srcs.length], srcs[(i - 1 + srcs.length) % srcs.length]].forEach((s) => (new Image().src = s));
+  };
+  document.querySelectorAll<HTMLElement>('[data-open]').forEach((b) =>
+    b.addEventListener('click', () => { show(Number(b.dataset.open)); dlg.showModal(); }),
+  );
+  dlg.querySelector('[data-close]')!.addEventListener('click', () => dlg.close());
+  dlg.querySelector('[data-prev]')!.addEventListener('click', () => show(i - 1));
+  dlg.querySelector('[data-next]')!.addEventListener('click', () => show(i + 1));
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+    if (e.key === 'Escape') { e.preventDefault(); dlg.close(); }
+  });
+  // Clicking the dark area around the photo closes the viewer.
+  dlg.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    if (t === dlg || t.classList.contains('lb-stage')) dlg.close();
+  });
+  let x0: number | null = null;
+  dlg.addEventListener('touchstart', (e) => (x0 = e.touches[0].clientX), { passive: true });
+  dlg.addEventListener('touchend', (e) => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) show(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  });
+  if (srcs.length < 2) dlg.querySelectorAll('[data-prev],[data-next]').forEach((b) => b.remove());
+
+  const mapEl = document.getElementById('detail-map');
+  if (mapEl) {
+    const io = new IntersectionObserver(async ([entry]) => {
+      if (!entry.isIntersecting) return;
+      io.disconnect();
+      const { createMap, addPoints } = await import('../../scripts/map');
+      const pt = JSON.parse(mapEl.dataset.point!);
+      const map = createMap(mapEl, { center: [pt.lat, pt.lng], zoom: pt.exact ? 15 : 14 });
+      addPoints(map, [pt]);
+    }, { rootMargin: '200px' });
+    io.observe(mapEl);
+  }
+</script>

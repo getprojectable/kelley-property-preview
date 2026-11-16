@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { company } from '../data/site';
+import img1 from '../assets/properties/monarch-estate-apartments/01.jpg';
+import img2 from '../assets/properties/lancer-2/01.jpg';
+
+const all = await getCollection('properties');
+const values = [
+  { icon: 'star', title: 'Quality', text: 'Well-kept buildings and homes in convenient, established neighborhoods.' },
+  { icon: 'home', title: 'Price', text: 'The best rentals at the lowest prices in the Cedar Rapids, Marion and Hiawatha area.' },
+  { icon: 'users', title: 'Service', text: 'A local office open six days a week and a maintenance team that responds.' },
+] as const;
+---
+
+<Layout title="About Us" description="Kelley Properties has provided quality, affordable rentals in Cedar Rapids, Marion and Hiawatha, Iowa for over 30 years.">
+  <PageHero eyebrow="About Kelley Properties" title="Something for everyone, for over 30 years." lead="Local property management built on three simple priorities: quality, price and service." />
+
+  <section class="section">
+    <div class="container-x grid items-center gap-16 lg:grid-cols-2">
+      <div>
+        <p class="eyebrow reveal">Our Story</p>
+        <h2 class="reveal mt-3 text-3xl font-extrabold sm:text-4xl">Helping Eastern Iowa find home for over 30 years.</h2>
+        <div class="reveal mt-6 space-y-4 text-lg leading-relaxed text-slate-600">
+          <p>For more than three decades, Kelley Properties has offered renters in Cedar Rapids, Marion and Hiawatha a simple promise: quality housing at fair prices, backed by people who care.</p>
+          <p>Today we manage over 1,000 units — from cozy one-bedroom apartments and multi-level townhomes to single-family houses and commercial space — so whatever stage of life you're in, we have something for you.</p>
+          <p>Stop by our office on 1st Avenue NE and you'll talk with a real person who knows the neighborhoods, the buildings and the schools.</p>
+        </div>
+      </div>
+      <div class="reveal relative grid grid-cols-5 gap-4">
+        <Image src={img1} alt="Monarch Estates apartments" widths={[500, 800]} sizes="(min-width:1024px) 30vw, 60vw" class="col-span-3 aspect-[3/4] w-full rounded-3xl object-cover shadow-xl" />
+        <div class="col-span-2 flex flex-col gap-4 pt-12">
+          <Image src={img2} alt="Lancer townhomes" widths={[300, 500]} sizes="20vw" class="aspect-square w-full rounded-3xl object-cover shadow-xl" />
+          <div class="rounded-3xl bg-brand-700 p-5 text-white">
+            <p class="font-display text-3xl font-extrabold">{company.units}</p>
+            <p class="text-sm text-brand-100">units across the Corridor</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-sand">
+    <div class="container-x">
+      <div class="reveal mx-auto max-w-2xl text-center">
+        <p class="eyebrow">What we stand for</p>
+        <h2 class="mt-3 text-3xl font-extrabold sm:text-4xl">Quality. Price. Service.</h2>
+      </div>
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {values.map((v, i) => (
+          <div class="reveal card p-8" style={`transition-delay:${i * 90}ms`}>
+            <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-brand-600 text-white"><Icon name={v.icon} class="size-6" /></span>
+            <h3 class="mt-6 text-xl font-bold">{v.title}</h3>
+            <p class="mt-2 text-slate-600">{v.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-x">
+      <dl class="grid gap-6 rounded-[2rem] border border-slate-200 p-8 text-center sm:grid-cols-2 lg:grid-cols-4 lg:p-12">
+        {[
+          [company.yearsInBusiness, 'Years in business'],
+          [company.units, 'Rental units'],
+          [String(all.length), 'Listings online now'],
+          ['3', 'Cities served'],
+        ].map(([n, l]) => (
+          <div class="flex flex-col"><dt class="order-2 text-sm text-slate-500">{l}</dt><dd class="font-display text-4xl font-extrabold text-brand-700">{n}</dd></div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <CtaBand />
+</Layout>

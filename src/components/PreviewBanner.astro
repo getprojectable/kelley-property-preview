@@ -1,0 +1,14 @@
+---
+// Shown only on the customer preview build. Disable with PUBLIC_PREVIEW_BANNER=false.
+const show = import.meta.env.PUBLIC_PREVIEW_BANNER !== 'false';
+---
+
+{show && (
+  <div id="preview-banner" class="relative z-[60] bg-amber-300 text-amber-950">
+    <div class="container-x flex items-center justify-center gap-3 py-2 text-center text-xs font-medium sm:text-sm">
+      <span><strong>Design preview</strong> — proposed new website for Kelley Properties. Listings mirror the current site.</span>
+      <button type="button" class="rounded-full px-2 text-lg leading-none hover:bg-amber-400" aria-label="Dismiss preview notice" onclick="this.closest('#preview-banner').remove(); sessionStorage.setItem('kp-banner','0')">×</button>
+    </div>
+  </div>
+  <script is:inline>if (sessionStorage.getItem('kp-banner') === '0') document.getElementById('preview-banner')?.remove();</script>
+)}

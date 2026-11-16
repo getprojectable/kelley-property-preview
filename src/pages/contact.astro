@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import FormShell from '../components/FormShell.astro';
+import Icon from '../components/Icon.astro';
+import { company } from '../data/site';
+---
+
+<Layout title="Contact Us" description="Contact Kelley Properties in Cedar Rapids, Iowa. Call (319) 365-3156 or visit our office at 2750 1st Avenue NE, Suite 230.">
+  <PageHero eyebrow="Contact" title="We'd love to hear from you" lead="Questions about a rental, availability or pricing? Call, stop by, or send us a message." />
+
+  <section class="container-x grid gap-10 py-16 lg:grid-cols-[380px_minmax(0,1fr)]">
+    <div class="space-y-5">
+      {[
+        { icon: 'phone', title: 'Call us', lines: [`Phone: ${company.phone}`, `Fax: ${company.fax}`], href: company.phoneHref, cta: 'Call now' },
+        { icon: 'pin', title: 'Visit the office', lines: [company.street, `${company.city}, ${company.region} ${company.postal}`], href: company.mapsUrl, cta: 'Get directions' },
+        { icon: 'clock', title: 'Office hours', lines: company.hours.map((h) => `${h.days}: ${h.time}`), note: company.hoursNote },
+      ].map((c) => (
+        <div class="card flex gap-5 p-6">
+          <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-700"><Icon name={c.icon as any} class="size-6" /></span>
+          <div>
+            <h2 class="text-lg font-bold">{c.title}</h2>
+            {c.lines.map((l) => <p class="text-sm text-slate-600">{l}</p>)}
+            {c.note && <p class="mt-2 text-xs text-slate-500">{c.note}</p>}
+            {c.href && <a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:underline">{c.cta} <Icon name="arrow" class="size-4" /></a>}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="card p-6 sm:p-10">
+      <h2 class="text-2xl font-bold">Send a message</h2>
+      <p class="mt-1 text-slate-600">Our office will get back to you as soon as possible.</p>
+      <FormShell subject="Contact Form" submitLabel="Send message" class="mt-8">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div><label class="field-label" for="c-name">Name <span class="text-red-500">*</span></label><input id="c-name" name="name" required autocomplete="name" class="field" /></div>
+          <div><label class="field-label" for="c-phone">Phone</label><input id="c-phone" name="phone" type="tel" autocomplete="tel" class="field" /></div>
+          <div class="sm:col-span-2"><label class="field-label" for="c-email">Email <span class="text-red-500">*</span></label><input id="c-email" name="email" type="email" required autocomplete="email" class="field" /></div>
+          <div class="sm:col-span-2"><label class="field-label" for="c-topic">I'm interested in</label>
+            <select id="c-topic" name="topic" class="field">
+              <option>Renting an apartment or home</option>
+              <option>Commercial space</option>
+              <option>Current resident question</option>
+              <option>Vacation rentals</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2"><label class="field-label" for="c-msg">Message <span class="text-red-500">*</span></label><textarea id="c-msg" name="message" rows="5" required class="field"></textarea></div>
+        </div>
+      </FormShell>
+    </div>
+  </section>
+
+  <section class="container-x pb-20">
+    <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-sm">
+      <div id="office-map" class="h-96" data-lat={company.office.lat} data-lng={company.office.lng}></div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const el = document.getElementById('office-map')!;
+  const io = new IntersectionObserver(async ([e]) => {
+    if (!e.isIntersecting) return;
+    io.disconnect();
+    const { createMap, addPoints } = await import('../scripts/map');
+    const lat = Number(el.dataset.lat), lng = Number(el.dataset.lng);
+    const map = createMap(el, { center: [lat, lng], zoom: 15 });
+    const { markers } = addPoints(map, [{ id: 'office', title: 'Kelley Properties Office', lat, lng, meta: '2750 1st Avenue NE, Suite 230', href: 'https://www.google.com/maps/search/?api=1&query=2750+1st+Avenue+NE+Suite+230+Cedar+Rapids+IA+52402' }]);
+    markers.get('office')?.openPopup();
+  }, { rootMargin: '200px' });
+  io.observe(el);
+</script>

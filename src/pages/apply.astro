@@ -1,0 +1,128 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import FormShell from '../components/FormShell.astro';
+import Icon from '../components/Icon.astro';
+import { company, url } from '../data/site';
+import bg from '../assets/properties/apache-park-apartments/01.jpg';
+
+const properties = (await getCollection('properties')).map((p) => `${p.data.title} (${p.data.city})`).sort();
+const steps = [
+  { icon: 'search', title: 'Find your home', text: 'Browse our rentals or call us to hear about current availability.' },
+  { icon: 'file', title: 'Apply', text: 'Complete the online application below or download the PDF.' },
+  { icon: 'shield', title: 'Screening', text: 'We review your application and contact you to complete screening.' },
+  { icon: 'key', title: 'Move in', text: 'Sign your lease, pick up your keys and make yourself at home.' },
+] as const;
+---
+
+<Layout title="Apply" description="Apply to rent with Kelley Properties. Complete our online rental application or download the tenant and co-signer applications.">
+  <PageHero eyebrow="Apply" title="Rental application" lead="Applying is simple. Start online in minutes, or download the printable tenant and co-signer forms." image={bg} />
+
+  <section class="container-x py-16">
+    <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {steps.map((s, i) => (
+        <li class="reveal relative rounded-3xl border border-slate-200 p-6" style={`transition-delay:${i * 80}ms`}>
+          <span class="absolute right-6 top-6 font-display text-4xl font-extrabold text-brand-100">{i + 1}</span>
+          <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-brand-600 text-white"><Icon name={s.icon} class="size-6" /></span>
+          <h2 class="mt-5 text-lg font-bold">{s.title}</h2>
+          <p class="mt-1 text-sm text-slate-600">{s.text}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2">
+      {[
+        { title: 'Tenant Application', text: 'Printable PDF for each adult applicant.', href: url('docs/Kelley-Tenant-Application.pdf') },
+        { title: 'Co-Signer Application', text: 'Printable PDF for co-signers / guarantors.', href: url('docs/Kelley-Co-Signer-Application.pdf') },
+      ].map((d) => (
+        <a href={d.href} target="_blank" rel="noopener" class="group flex items-center gap-5 rounded-3xl bg-sand p-6 transition hover:bg-brand-50">
+          <span class="inline-flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white text-brand-700 shadow-sm"><Icon name="download" class="size-6" /></span>
+          <span>
+            <span class="block text-lg font-bold text-ink">{d.title}</span>
+            <span class="text-sm text-slate-600">{d.text}</span>
+          </span>
+          <Icon name="arrow" class="ml-auto size-5 text-brand-700 transition group-hover:translate-x-1" />
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="online" class="bg-sand py-16 sm:py-24">
+    <div class="container-x max-w-4xl">
+      <div class="text-center">
+        <p class="eyebrow">Online Application</p>
+        <h2 class="mt-3 text-3xl font-extrabold sm:text-4xl">Start your application online</h2>
+        <p class="mx-auto mt-3 max-w-2xl text-slate-600">
+          Fill out the basics here and our office will contact you to finish screening. For your security, we never ask for
+          Social Security numbers through this form.
+        </p>
+      </div>
+
+      <div class="card mt-10 p-6 sm:p-10">
+        <FormShell subject="Online Rental Application" submitLabel="Submit application">
+          <fieldset>
+            <legend class="flex items-center gap-2 text-lg font-bold text-ink"><span class="inline-flex size-7 items-center justify-center rounded-full bg-brand-600 text-xs text-white">1</span> Rental details</legend>
+            <div class="mt-5 grid gap-5 sm:grid-cols-2">
+              <div class="sm:col-span-2"><label class="field-label" for="a-prop">Property applying for <span class="text-red-500">*</span></label>
+                <select id="a-prop" name="property" required class="field"><option value="">Select a property…</option>{properties.map((p) => <option>{p}</option>)}<option>Not sure yet / other</option></select>
+              </div>
+              <div><label class="field-label" for="a-move">Desired move-in date <span class="text-red-500">*</span></label><input id="a-move" name="move_in" type="date" required class="field" /></div>
+              <div><label class="field-label" for="a-occ">Number of occupants <span class="text-red-500">*</span></label><input id="a-occ" name="occupants" type="number" min="1" max="12" required class="field" /></div>
+              <div><label class="field-label" for="a-pets">Pets</label>
+                <select id="a-pets" name="pets" class="field"><option>No pets</option><option>Cat(s)</option><option>Dog(s)</option><option>Other</option></select>
+              </div>
+              <div><label class="field-label" for="a-cosigner">Will you have a co-signer?</label>
+                <select id="a-cosigner" name="cosigner" class="field"><option>No</option><option>Yes</option></select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="mt-10 border-t border-slate-200 pt-8">
+            <legend class="flex items-center gap-2 text-lg font-bold text-ink"><span class="inline-flex size-7 items-center justify-center rounded-full bg-brand-600 text-xs text-white">2</span> About you</legend>
+            <div class="mt-5 grid gap-5 sm:grid-cols-2">
+              <div><label class="field-label" for="a-first">First name <span class="text-red-500">*</span></label><input id="a-first" name="first_name" required autocomplete="given-name" class="field" /></div>
+              <div><label class="field-label" for="a-last">Last name <span class="text-red-500">*</span></label><input id="a-last" name="last_name" required autocomplete="family-name" class="field" /></div>
+              <div><label class="field-label" for="a-email">Email <span class="text-red-500">*</span></label><input id="a-email" name="email" type="email" required autocomplete="email" class="field" /></div>
+              <div><label class="field-label" for="a-phone">Phone <span class="text-red-500">*</span></label><input id="a-phone" name="phone" type="tel" required autocomplete="tel" class="field" /></div>
+              <div><label class="field-label" for="a-dob">Date of birth</label><input id="a-dob" name="date_of_birth" type="date" autocomplete="bday" class="field" /></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="mt-10 border-t border-slate-200 pt-8">
+            <legend class="flex items-center gap-2 text-lg font-bold text-ink"><span class="inline-flex size-7 items-center justify-center rounded-full bg-brand-600 text-xs text-white">3</span> Current residence</legend>
+            <div class="mt-5 grid gap-5 sm:grid-cols-2">
+              <div class="sm:col-span-2"><label class="field-label" for="a-addr">Current address <span class="text-red-500">*</span></label><input id="a-addr" name="current_address" required autocomplete="street-address" class="field" /></div>
+              <div><label class="field-label" for="a-howlong">How long at this address?</label><input id="a-howlong" name="time_at_address" placeholder="e.g. 2 years" class="field" /></div>
+              <div><label class="field-label" for="a-rent">Current monthly rent</label><input id="a-rent" name="current_rent" inputmode="decimal" placeholder="$" class="field" /></div>
+              <div><label class="field-label" for="a-ll">Current landlord name</label><input id="a-ll" name="landlord_name" class="field" /></div>
+              <div><label class="field-label" for="a-llp">Landlord phone</label><input id="a-llp" name="landlord_phone" type="tel" class="field" /></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="mt-10 border-t border-slate-200 pt-8">
+            <legend class="flex items-center gap-2 text-lg font-bold text-ink"><span class="inline-flex size-7 items-center justify-center rounded-full bg-brand-600 text-xs text-white">4</span> Employment &amp; income</legend>
+            <div class="mt-5 grid gap-5 sm:grid-cols-2">
+              <div><label class="field-label" for="a-emp">Employer</label><input id="a-emp" name="employer" autocomplete="organization" class="field" /></div>
+              <div><label class="field-label" for="a-pos">Position</label><input id="a-pos" name="position" class="field" /></div>
+              <div><label class="field-label" for="a-inc">Monthly income</label><input id="a-inc" name="monthly_income" inputmode="decimal" placeholder="$" class="field" /></div>
+              <div><label class="field-label" for="a-len">Length of employment</label><input id="a-len" name="employment_length" class="field" /></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="mt-10 border-t border-slate-200 pt-8">
+            <legend class="flex items-center gap-2 text-lg font-bold text-ink"><span class="inline-flex size-7 items-center justify-center rounded-full bg-brand-600 text-xs text-white">5</span> Anything else?</legend>
+            <div class="mt-5 grid gap-5">
+              <textarea name="notes" rows="4" class="field" aria-label="Additional notes" placeholder="Other occupants, questions, preferred contact time…"></textarea>
+              <label class="flex items-start gap-3 text-sm text-slate-700">
+                <input type="checkbox" name="authorization" value="Agreed" required class="mt-0.5 size-4 accent-brand-600" />
+                <span>I certify the information provided is true and complete, and I understand Kelley Properties will contact me to complete the full screening process. <span class="text-red-500">*</span></span>
+              </label>
+            </div>
+          </fieldset>
+        </FormShell>
+      </div>
+      <p class="mt-6 text-center text-sm text-slate-500">Questions? Call <a class="font-semibold text-brand-700" href={company.phoneHref}>{company.phone}</a></p>
+    </div>
+  </section>
+</Layout>

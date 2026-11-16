@@ -1,0 +1,243 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import PropertyCard from '../../components/PropertyCard.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { url } from '../../data/site';
+
+const typeOrder = ['Apartment', 'Townhouse', 'House', 'Commercial'];
+const all = (await getCollection('properties')).sort(
+  (a, b) =>
+    Number(b.data.featured) - Number(a.data.featured) ||
+    Number(b.data.available) - Number(a.data.available) ||
+    typeOrder.indexOf(a.data.type) - typeOrder.indexOf(b.data.type) ||
+    a.data.title.localeCompare(b.data.title),
+);
+
+const cities = ['Cedar Rapids', 'Marion', 'Hiawatha'];
+const types = typeOrder.filter((t) => all.some((p) => p.data.type === t));
+const features = [...new Set(all.flatMap((p) => p.data.features))].sort();
+
+const points = await Promise.all(
+  all
+    .filter((p) => p.data.location)
+    .map(async (p) => ({
+      id: p.id,
+      title: p.data.title,
+      lat: p.data.location!.lat,
+      lng: p.data.location!.lng,
+      exact: p.data.location!.exact,
+      href: url(`properties/${p.id}/`),
+      thumb: (await getImage({ src: p.data.images[0], width: 160, format: 'webp' })).src,
+      meta: `${p.data.type} · ${p.data.beds ? `${p.data.beds} bd · ${p.data.baths} ba · ` : ''}${p.data.city}`,
+    })),
+);
+---
+
+<Layout title="Rentals in Cedar Rapids, Marion & Hiawatha" description="Search apartments, townhomes, houses and commercial space for rent from Kelley Properties in Cedar Rapids, Marion and Hiawatha, Iowa.">
+  <PageHero eyebrow="Find a Home" title="Rentals across Cedar Rapids, Marion & Hiawatha" lead="Filter by location, size and amenities — or explore the map to find the neighborhood that fits you best." />
+
+  <section id="listings" data-view="grid" class="group/view">
+    <!-- Filter bar -->
+    <div class="z-30 border-b border-slate-200 bg-white/95 backdrop-blur-xl lg:sticky lg:top-20">
+      <form id="filters" class="container-x flex flex-wrap items-end gap-3 py-4" onsubmit="return false">
+        <div class="min-w-[9.5rem] flex-1 sm:flex-none">
+          <label for="f-city" class="field-label !text-xs !text-slate-500">Location</label>
+          <select id="f-city" name="city" class="field !py-2.5">
+            <option value="">All locations</option>
+            {cities.map((c) => <option>{c}</option>)}
+          </select>
+        </div>
+        <div class="min-w-[9.5rem] flex-1 sm:flex-none">
+          <label for="f-type" class="field-label !text-xs !text-slate-500">Type</label>
+          <select id="f-type" name="type" class="field !py-2.5">
+            <option value="">All types</option>
+            {types.map((t) => <option>{t}</option>)}
+          </select>
+        </div>
+        <div class="min-w-[7rem] flex-1 sm:flex-none">
+          <label for="f-beds" class="field-label !text-xs !text-slate-500">Beds</label>
+          <select id="f-beds" name="beds" class="field !py-2.5">
+            <option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option>
+          </select>
+        </div>
+        <div class="min-w-[7rem] flex-1 sm:flex-none">
+          <label for="f-baths" class="field-label !text-xs !text-slate-500">Baths</label>
+          <select id="f-baths" name="baths" class="field !py-2.5">
+            <option value="">Any</option><option value="1">1+</option><option value="2">2+</option>
+          </select>
+        </div>
+        <details id="f-features" class="relative">
+          <summary class="field flex cursor-pointer list-none items-center gap-2 !py-2.5 [&::-webkit-details-marker]:hidden">
+            <Icon name="sliders" class="size-4 text-slate-500" /> Amenities <span id="f-feat-count" class="hidden rounded-full bg-brand-600 px-2 text-xs font-semibold text-white"></span>
+          </summary>
+          <div class="absolute left-0 z-40 mt-2 grid w-72 gap-1 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl">
+            {features.map((f) => (
+              <label class="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm hover:bg-slate-50">
+                <input type="checkbox" name="feature" value={f} class="size-4 rounded accent-brand-600" /> {f}
+              </label>
+            ))}
+          </div>
+        </details>
+        <button type="button" id="f-reset" class="px-2 py-2.5 text-sm font-medium text-slate-500 underline-offset-4 hover:text-brand-700 hover:underline">Reset</button>
+
+        <div class="ml-auto flex items-center gap-4">
+          <p class="text-sm text-slate-500" aria-live="polite"><strong id="f-count" class="text-ink">{all.length}</strong> results</p>
+          <div class="inline-flex rounded-full border border-slate-200 bg-slate-50 p-1" role="group" aria-label="View">
+            <button type="button" data-set-view="grid" class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium text-slate-600 group-data-[view=grid]/view:bg-white group-data-[view=grid]/view:text-brand-700 group-data-[view=grid]/view:shadow-sm"><Icon name="grid" class="size-4" /> Grid</button>
+            <button type="button" data-set-view="map" class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium text-slate-600 group-data-[view=map]/view:bg-white group-data-[view=map]/view:text-brand-700 group-data-[view=map]/view:shadow-sm"><Icon name="map" class="size-4" /> Map</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="container-x py-10">
+      <div class="grid gap-8 group-data-[view=map]/view:lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <div class="order-2 group-data-[view=map]/view:lg:order-1">
+          <div id="results" class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 group-data-[view=map]/view:lg:grid-cols-2">
+            {all.map((p, i) => <PropertyCard property={p} eager={i < 3} />)}
+          </div>
+          <div id="empty" class="hidden rounded-3xl border border-dashed border-slate-300 p-12 text-center">
+            <Icon name="search" class="mx-auto size-10 text-slate-300" />
+            <h2 class="mt-4 text-xl font-bold">No matches online right now</h2>
+            <p class="mt-2 text-slate-600">We have over 1,000 units — not all are listed. Call <a class="font-semibold text-brand-700" href="tel:+13193653156">(319) 365-3156</a> and we'll help you find the right fit.</p>
+            <button type="button" id="f-reset-2" class="btn btn-outline mt-6">Reset filters</button>
+          </div>
+        </div>
+        <div class="order-1 hidden group-data-[view=map]/view:block lg:order-2">
+          <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-sm lg:sticky lg:top-44">
+            <div id="map" class="h-[55vh] w-full lg:h-[calc(100vh-13rem)]"></div>
+          </div>
+          <p class="mt-3 flex items-center gap-1.5 text-xs text-slate-500"><Icon name="pin" class="size-3.5" /> Pins show the general area of each community. Call for exact addresses.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+
+  <script is:inline type="application/json" id="map-data" set:html={JSON.stringify(points)} />
+</Layout>
+
+<script>
+  import type { MapPoint } from '../../scripts/map';
+  import type * as Leaflet from 'leaflet';
+
+  const section = document.getElementById('listings')!;
+  const form = document.getElementById('filters') as HTMLFormElement;
+  const cards = [...document.querySelectorAll<HTMLElement>('.property-card')];
+  const count = document.getElementById('f-count')!;
+  const empty = document.getElementById('empty')!;
+  const featCount = document.getElementById('f-feat-count')!;
+  const points: MapPoint[] = JSON.parse(document.getElementById('map-data')!.textContent || '[]');
+
+  type MapApi = { map: Leaflet.Map; markers: Map<string, Leaflet.Marker>; mod: typeof import('../../scripts/map') };
+  let mapApi: MapApi | null = null;
+
+  async function ensureMap(): Promise<MapApi> {
+    if (mapApi) return mapApi;
+    const mod = await import('../../scripts/map');
+    const map = mod.createMap(document.getElementById('map')!);
+    const { markers } = mod.addPoints(map, points);
+    mapApi = { map, markers, mod };
+    return mapApi;
+  }
+
+  async function syncMap() {
+    if (section.dataset.view !== 'map') return;
+    const { map, markers, mod } = await ensureMap();
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    map.invalidateSize();
+    const ids = new Set(cards.filter((c) => !c.hidden).map((c) => c.dataset.id!));
+    const shown = new Set<Leaflet.Marker>();
+    markers.forEach((m, id) => { if (ids.has(id)) shown.add(m); });
+    markers.forEach((m) => {
+      const el = m.getElement();
+      if (el) el.style.display = shown.has(m) ? '' : 'none';
+    });
+    if (shown.size) map.fitBounds(mod.bounds([...shown].map((m) => m.getLatLng())).pad(0.2), { maxZoom: 14 });
+  }
+
+  function apply(updateUrl = true) {
+    const fd = new FormData(form);
+    const city = String(fd.get('city') || '');
+    const type = String(fd.get('type') || '');
+    const beds = Number(fd.get('beds') || 0);
+    const baths = Number(fd.get('baths') || 0);
+    const feats = fd.getAll('feature').map(String);
+
+    let n = 0;
+    for (const c of cards) {
+      const d = c.dataset;
+      const have = (d.features || '').split('|');
+      const ok =
+        (!city || d.city === city) &&
+        (!type || d.type === type) &&
+        Number(d.beds) >= beds &&
+        Number(d.baths) >= baths &&
+        feats.every((f) => have.includes(f));
+      c.hidden = !ok;
+      if (ok) n++;
+    }
+    count.textContent = String(n);
+    empty.classList.toggle('hidden', n > 0);
+    featCount.textContent = String(feats.length);
+    featCount.classList.toggle('hidden', feats.length === 0);
+
+    if (updateUrl) {
+      const params = new URLSearchParams();
+      if (city) params.set('city', city);
+      if (type) params.set('type', type);
+      if (beds) params.set('beds', String(beds));
+      if (baths) params.set('baths', String(baths));
+      feats.forEach((f) => params.append('feature', f));
+      if (section.dataset.view === 'map') params.set('view', 'map');
+      const q = params.toString();
+      history.replaceState(null, '', `${location.pathname}${q ? '?' + q : ''}`);
+    }
+    syncMap();
+  }
+
+  // Initialise from the query string (supports links from the home page search).
+  const qs = new URLSearchParams(location.search);
+  for (const name of ['city', 'type', 'beds', 'baths']) {
+    const v = qs.get(name);
+    const el = form.elements.namedItem(name) as HTMLSelectElement | null;
+    if (v && el) el.value = v;
+  }
+  const qf = qs.getAll('feature');
+  form.querySelectorAll<HTMLInputElement>('input[name=feature]').forEach((i) => (i.checked = qf.includes(i.value)));
+  if (qs.get('view') === 'map') section.dataset.view = 'map';
+
+  form.addEventListener('change', () => apply());
+  document.querySelectorAll<HTMLButtonElement>('[data-set-view]').forEach((b) =>
+    b.addEventListener('click', () => {
+      section.dataset.view = b.dataset.setView === 'map' ? 'map' : 'grid';
+      apply();
+    }),
+  );
+  const reset = () => { form.reset(); apply(); };
+  document.getElementById('f-reset')!.addEventListener('click', reset);
+  document.getElementById('f-reset-2')!.addEventListener('click', reset);
+
+  // Close the amenities popover when clicking elsewhere.
+  const details = document.getElementById('f-features') as HTMLDetailsElement;
+  document.addEventListener('click', (e) => { if (!details.contains(e.target as Node)) details.open = false; });
+
+  // Highlight the matching pin while hovering a card.
+  cards.forEach((c) => {
+    c.addEventListener('mouseenter', () => {
+      if (section.dataset.view !== 'map' || !mapApi) return;
+      mapApi.markers.get(c.dataset.id!)?.setIcon(mapApi.mod.pinIcon(true)).setZIndexOffset(1000);
+    });
+    c.addEventListener('mouseleave', () => {
+      if (!mapApi) return;
+      mapApi.markers.get(c.dataset.id!)?.setIcon(mapApi.mod.pinIcon(false)).setZIndexOffset(0);
+    });
+  });
+
+  apply(false);
+</script>

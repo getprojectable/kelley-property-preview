@@ -1,0 +1,84 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PreviewBanner from '../components/PreviewBanner.astro';
+import { company, url } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title,
+  description = `Apartments, townhomes and houses for rent in Cedar Rapids, Marion and Hiawatha, Iowa. ${company.units} units and ${company.yearsInBusiness} years of local property management.`,
+  image,
+} = Astro.props;
+const fullTitle = title ? `${title} | Kelley Properties` : 'Kelley Properties | Cedar Rapids & Marion, Iowa Rentals';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'RealEstateAgent',
+  name: company.name,
+  slogan: company.tagline,
+  telephone: company.phone,
+  faxNumber: company.fax,
+  url: 'https://www.kelleyproperty.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: company.street,
+    addressLocality: company.city,
+    addressRegion: company.region,
+    postalCode: company.postal,
+    addressCountry: 'US',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: company.office.lat, longitude: company.office.lng },
+  openingHours: ['Mo-Fr 08:00-17:00', 'Sa 09:00-15:00'],
+  areaServed: ['Cedar Rapids, IA', 'Marion, IA', 'Hiawatha, IA'],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <!-- Customer preview: keep out of search engines until launch. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href={url('favicon.png')} />
+    <meta name="theme-color" content="#1b4d1f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#main" class="sr-only z-[100] rounded-full bg-brand-700 px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Skip to content</a>
+    <PreviewBanner />
+    <Header />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+        }),
+        { rootMargin: '0px 0px -8% 0px' },
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

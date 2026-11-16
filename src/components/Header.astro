@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/kelley-logo.png';
+import Icon from './Icon.astro';
+import { company, nav, url } from '../data/site';
+
+const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
+const isActive = (href: string) => path.startsWith('/' + href.replace(/\/$/, ''));
+---
+
+<div class="hidden bg-brand-950 text-[13px] text-brand-100 md:block">
+  <div class="container-x flex h-10 items-center justify-between gap-6">
+    <a href={company.mapsUrl} target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-white">
+      <Icon name="pin" class="size-4 text-brand-400" />
+      {company.address}
+    </a>
+    <div class="flex items-center gap-6">
+      <span class="flex items-center gap-2"><Icon name="clock" class="size-4 text-brand-400" /> Mon–Fri 8–5 · Sat 9–3</span>
+      <a href={company.phoneHref} class="flex items-center gap-2 font-semibold text-white hover:text-brand-200">
+        <Icon name="phone" class="size-4 text-brand-400" />
+        {company.phone}
+      </a>
+    </div>
+  </div>
+</div>
+
+<header id="site-header" class="sticky top-0 z-50 border-b border-transparent bg-white/90 backdrop-blur-xl transition-[box-shadow,border-color] duration-300 data-[scrolled]:border-slate-200 data-[scrolled]:shadow-sm">
+  <div class="container-x flex h-20 items-center justify-between gap-6">
+    <a href={url()} class="shrink-0" aria-label={`${company.name} home`}>
+      <Image src={logo} alt={company.name} class="h-11 w-auto sm:h-12" loading="eager" />
+    </a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {nav.map((item) => (
+          <li>
+            <a
+              href={url(item.href)}
+              class:list={[
+                'rounded-full px-4 py-2 text-[15px] font-medium transition hover:bg-brand-50 hover:text-brand-700',
+                isActive(item.href) ? 'bg-brand-50 text-brand-700' : 'text-slate-700',
+              ]}
+              aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href={company.phoneHref} class="btn btn-outline hidden !px-4 sm:inline-flex lg:hidden xl:inline-flex">
+        <Icon name="phone" class="size-4" /> Call
+      </a>
+      <a href={url('properties/')} class="btn btn-primary hidden sm:inline-flex">
+        <Icon name="search" class="size-4" /> Browse Rentals
+      </a>
+      <button id="menu-toggle" type="button" class="inline-flex size-11 items-center justify-center rounded-full border border-slate-200 text-ink lg:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+        <Icon name="menu" class="size-5" />
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white lg:hidden">
+    <nav aria-label="Mobile" class="container-x py-4">
+      <ul class="grid gap-1">
+        {nav.map((item) => (
+          <li>
+            <a href={url(item.href)} class="flex items-center justify-between rounded-2xl px-4 py-3 text-base font-medium text-ink hover:bg-brand-50">
+              {item.label} <Icon name="right" class="size-4 text-slate-400" />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-4 grid grid-cols-2 gap-3">
+        <a href={company.phoneHref} class="btn btn-outline"><Icon name="phone" class="size-4" /> Call Us</a>
+        <a href={url('properties/')} class="btn btn-primary"><Icon name="search" class="size-4" /> Rentals</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  toggle.addEventListener('click', () => {
+    const open = menu.classList.toggle('hidden') === false;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+</script>

@@ -1,0 +1,57 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/kelley-logo.png';
+import Icon from './Icon.astro';
+import { company, nav, url, vacationRentals } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="relative overflow-hidden bg-brand-950 text-brand-100/80">
+  <div class="pointer-events-none absolute -right-40 -top-40 size-[32rem] rounded-full bg-brand-700/20 blur-3xl"></div>
+  <div class="container-x relative grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-12">
+    <div class="lg:col-span-4">
+      <Image src={logo} alt={company.name} class="h-12 w-auto brightness-0 invert" />
+      <p class="mt-5 max-w-sm text-sm leading-relaxed">
+        Quality, price and service have been our priority for over 30 years. Over {company.units} rental units across
+        Cedar Rapids, Marion and Hiawatha — <em class="text-white">"{company.tagline}."</em>
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href={company.phoneHref} class="btn bg-brand-500 text-white hover:bg-brand-400"><Icon name="phone" class="size-4" /> {company.phone}</a>
+      </div>
+    </div>
+
+    <div class="lg:col-span-2">
+      <h3 class="text-sm font-semibold uppercase tracking-wider text-white">Explore</h3>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        <li><a class="hover:text-white" href={url()}>Home</a></li>
+        {nav.map((n) => <li><a class="hover:text-white" href={url(n.href)}>{n.label}</a></li>)}
+      </ul>
+    </div>
+
+    <div class="lg:col-span-3">
+      <h3 class="text-sm font-semibold uppercase tracking-wider text-white">Tropical Vacation Rentals</h3>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        {vacationRentals.map((v) => (
+          <li><a class="inline-flex items-center gap-1.5 hover:text-white" href={v.url} target="_blank" rel="noopener">{v.name} <Icon name="external" class="size-3 opacity-60" /></a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="lg:col-span-3">
+      <h3 class="text-sm font-semibold uppercase tracking-wider text-white">Visit the Office</h3>
+      <ul class="mt-4 space-y-4 text-sm">
+        <li class="flex gap-3"><Icon name="pin" class="mt-0.5 size-4 shrink-0 text-brand-400" /><a class="hover:text-white" href={company.mapsUrl} target="_blank" rel="noopener">{company.street}<br />{company.city}, {company.region} {company.postal}</a></li>
+        <li class="flex gap-3"><Icon name="clock" class="mt-0.5 size-4 shrink-0 text-brand-400" />
+          <span>{company.hours.map((h) => <span class="block">{h.days}: {h.time}</span>)}</span>
+        </li>
+        <li class="flex gap-3"><Icon name="phone" class="mt-0.5 size-4 shrink-0 text-brand-400" /><span>Phone <a class="text-white hover:underline" href={company.phoneHref}>{company.phone}</a><br />Fax {company.fax}</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="container-x flex flex-col items-center justify-between gap-3 py-6 text-xs sm:flex-row">
+      <p>© 2015–{year} {company.name}. All rights reserved.</p>
+      <p class="flex items-center gap-2"><Icon name="home" class="size-3.5" /> Serving Cedar Rapids, Marion &amp; Hiawatha</p>
+    </div>
+  </div>
+</footer>

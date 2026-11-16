@@ -1,0 +1,83 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/plus-jakarta-sans";
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand greens sampled from the Kelley logo */
+  --color-brand-50: #f1f8ec;
+  --color-brand-100: #dfeed3;
+  --color-brand-200: #c1dfab;
+  --color-brand-300: #9acb79;
+  --color-brand-400: #7cba4f;
+  --color-brand-500: #5fa137;
+  --color-brand-600: #478029;
+  --color-brand-700: #2f6423;
+  --color-brand-800: #1b4d1f;
+  --color-brand-900: #123a17;
+  --color-brand-950: #0a230d;
+
+  --color-ink: #13201a;
+  --color-sand: #f7f6f1;
+
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+  body { @apply bg-white font-sans text-slate-700 antialiased; }
+  h1, h2, h3, h4 { @apply font-display text-ink tracking-tight; text-wrap: balance; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-brand-500; }
+  ::selection { @apply bg-brand-200 text-brand-950; }
+}
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-7xl px-5 sm:px-8; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition duration-200 focus-visible:outline-2 disabled:opacity-60; }
+  .btn-primary { @apply bg-brand-600 text-white shadow-lg shadow-brand-900/15 hover:bg-brand-700 hover:-translate-y-0.5; }
+  .btn-light { @apply bg-white text-brand-800 shadow-lg shadow-black/10 hover:bg-brand-50 hover:-translate-y-0.5; }
+  .btn-outline { @apply border border-slate-300 bg-white text-ink hover:border-brand-500 hover:text-brand-700; }
+  .btn-ghost-light { @apply border border-white/40 text-white hover:bg-white/10; }
+  .eyebrow { @apply inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-600; }
+  .section { @apply py-20 sm:py-28; }
+  .card { @apply rounded-3xl border border-slate-200/80 bg-white shadow-sm; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-800; }
+
+  .field-label { @apply mb-1.5 block text-sm font-medium text-ink; }
+  .field { @apply block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-ink shadow-sm transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 focus:outline-none; }
+  .field:user-invalid { @apply border-red-400 focus:ring-red-400/20; }
+  select.field { @apply appearance-none bg-no-repeat pr-10; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-size: 1.1rem; background-position: right 0.9rem center; }
+
+  .prose-kelley p { @apply mb-4 leading-relaxed; }
+}
+
+@layer utilities {
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .reveal.is-visible { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+}
+
+
+/* Leaflet map pins & popups */
+.kp-pin { background: none; border: 0; filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.25)); }
+.leaflet-container { font-family: var(--font-sans); border-radius: inherit; }
+.leaflet-popup-content-wrapper { border-radius: 1rem; padding: 0; overflow: hidden; }
+.leaflet-popup-content { margin: 0 !important; width: auto !important; }
+.kp-popup-list { display: grid; width: 270px; max-height: 320px; overflow: auto; }
+.kp-popup { display: flex; gap: 0.75rem; align-items: center; padding: 0.6rem; color: var(--color-ink) !important; text-decoration: none; }
+.kp-popup + .kp-popup { border-top: 1px solid #e2e8f0; }
+.kp-popup:hover { background: var(--color-brand-50); }
+.kp-popup img { width: 72px; height: 56px; object-fit: cover; border-radius: 0.6rem; flex-shrink: 0; }
+.kp-popup-body { display: grid; gap: 2px; font-size: 12px; color: #475569; }
+.kp-popup-body strong { font-size: 14px; color: var(--color-ink); }
+.kp-popup-body em { color: var(--color-brand-600); font-style: normal; font-size: 11px; }
+.kp-tiles { filter: saturate(0.7) brightness(1.03); }

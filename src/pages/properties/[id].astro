@@ -35,7 +35,8 @@ const facts: { icon: IconName; label: string; value: string }[] = [
   ...(p.baths ? [{ icon: 'bath' as const, label: 'Bathrooms', value: String(p.baths) }] : []),
   { icon: 'car', label: 'Garage', value: p.garage ? (p.features.some((f) => /extra cost/i.test(f)) ? 'Available' : 'Included') : '—' },
 ];
-const point = p.location ? { id: property.id, title: p.title, lat: p.location.lat, lng: p.location.lng, exact: p.location.exact } : null;
+const point = { id: property.id, title: p.title, lat: p.location.lat, lng: p.location.lng, meta: p.address };
+const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.address)}`;
 ---
 
 <Layout title={`${p.title} – ${p.city}`} description={`${p.title} in ${p.city}, Iowa. ${p.summary} ${p.beds ? `${p.beds} bed, ${p.baths} bath ${p.type.toLowerCase()}.` : ''}`} image={ogImage}>
@@ -57,7 +58,7 @@ const point = p.location ? { id: property.id, title: p.title, lat: p.location.la
           {p.available && <span class="chip !bg-brand-600 !text-white">Available</span>}
         </div>
         <h1 class="mt-3 text-3xl font-extrabold sm:text-5xl">{p.title}</h1>
-        <p class="mt-2 flex items-center gap-1.5 text-slate-600"><Icon name="pin" class="size-4 text-brand-600" /> {p.address ?? `${p.city}, Iowa`}</p>
+        <p class="mt-2 flex items-center gap-1.5 text-slate-600"><Icon name="pin" class="size-4 text-brand-600" /> {p.address}</p>
       </div>
       <button type="button" onclick="window.print()" class="btn btn-outline !px-4 print:hidden"><Icon name="printer" class="size-4" /> Print</button>
     </div>
@@ -121,13 +122,14 @@ const point = p.location ? { id: property.id, title: p.title, lat: p.location.la
         </section>
       )}
 
-      {point && (
-        <section class="mt-12 print:hidden">
-          <h2 class="text-2xl font-bold">Location</h2>
-          <div id="detail-map" data-point={JSON.stringify(point)} class="mt-5 h-80 overflow-hidden rounded-3xl border border-slate-200"></div>
-          {!point.exact && <p class="mt-3 text-xs text-slate-500">Map shows the general area. Call {company.phone} for the exact address and to schedule a showing.</p>}
-        </section>
-      )}
+      <section class="mt-12 print:hidden">
+        <h2 class="text-2xl font-bold">Location</h2>
+        <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
+          <p class="flex items-center gap-2 text-slate-700"><Icon name="pin" class="size-5 text-brand-600" /> {p.address}</p>
+          <a href={directionsUrl} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:underline">Get directions <Icon name="external" class="size-4" /></a>
+        </div>
+        <div id="detail-map" data-point={JSON.stringify(point)} class="mt-5 h-80 overflow-hidden rounded-3xl border border-slate-200"></div>
+      </section>
     </div>
 
     <aside class="lg:sticky lg:top-28 lg:self-start">
@@ -242,7 +244,7 @@ const point = p.location ? { id: property.id, title: p.title, lat: p.location.la
       io.disconnect();
       const { createMap, addPoints } = await import('../../scripts/map');
       const pt = JSON.parse(mapEl.dataset.point!);
-      const map = createMap(mapEl, { center: [pt.lat, pt.lng], zoom: pt.exact ? 15 : 14 });
+      const map = createMap(mapEl, { center: [pt.lat, pt.lng], zoom: 15 });
       addPoints(map, [pt]);
     }, { rootMargin: '200px' });
     io.observe(mapEl);

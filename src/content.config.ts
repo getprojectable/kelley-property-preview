@@ -20,10 +20,8 @@ const properties = defineCollection({
       schools: z
         .object({ high: z.string(), middle: z.string(), elementary: z.string() })
         .optional(),
-      address: z.string().optional(),
-      location: z
-        .object({ lat: z.number(), lng: z.number(), exact: z.boolean().default(false) })
-        .optional(),
+      address: z.string(),
+      location: z.object({ lat: z.number(), lng: z.number() }),
       images: z.array(image()).min(1),
       legacyUrl: z.string().optional(),
     }),

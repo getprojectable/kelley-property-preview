@@ -14,10 +14,10 @@ schools:
   high: "Kennedy"
   middle: "Harding"
   elementary: "Nixon"
+address: "310 C Avenue, Hiawatha, IA 52233"
 location:
-  lat: 42.0395
-  lng: -91.67
-  exact: false
+  lat: 42.035432
+  lng: -91.6671913
 images:
   - "../../assets/properties/camelot-apartments/01.jpg"
   - "../../assets/properties/camelot-apartments/02.jpg"

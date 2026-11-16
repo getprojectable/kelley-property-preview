@@ -14,10 +14,10 @@ schools:
   high: "Washington"
   middle: "Franklin"
   elementary: "Garfield"
+address: "1124 Center Point Road NE, Cedar Rapids, IA 52402"
 location:
-  lat: 41.9705
-  lng: -91.6545
-  exact: false
+  lat: 42.000341
+  lng: -91.661927
 images:
   - "../../assets/properties/lamplight-terrace/01.jpg"
   - "../../assets/properties/lamplight-terrace/02.jpg"

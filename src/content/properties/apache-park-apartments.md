@@ -14,10 +14,10 @@ schools:
   high: "Jefferson"
   middle: "Roosevelt"
   elementary: "Cleveland"
+address: "2720 Johnson Avenue NW, Cedar Rapids, IA 52405"
 location:
-  lat: 41.9747
-  lng: -91.7085
-  exact: false
+  lat: 41.975035
+  lng: -91.708567
 images:
   - "../../assets/properties/apache-park-apartments/01.jpg"
   - "../../assets/properties/apache-park-apartments/02.jpg"

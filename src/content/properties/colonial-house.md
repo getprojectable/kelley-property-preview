@@ -14,10 +14,10 @@ schools:
   high: "Marion"
   middle: "Vernon"
   elementary: "Starry & Francis Marion"
+address: "910 Bridgit Lane, Cedar Rapids, IA 52403"
 location:
-  lat: 42.029
-  lng: -91.615
-  exact: false
+  lat: 42.024772
+  lng: -91.617301
 images:
   - "../../assets/properties/colonial-house/01.jpg"
   - "../../assets/properties/colonial-house/02.jpg"

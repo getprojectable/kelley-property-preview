@@ -14,11 +14,10 @@ schools:
   high: "Washington"
   middle: "Franklin"
   elementary: "Arthur"
-address: "2800, 2805 & 2818 A Ave NE, Cedar Rapids, IA 52402"
+address: "2800 A Avenue NE, Cedar Rapids, IA 52402"
 location:
-  lat: 42.0053
-  lng: -91.6368
-  exact: true
+  lat: 42.005353
+  lng: -91.636714
 images:
   - "../../assets/properties/lancer/01.jpg"
   - "../../assets/properties/lancer/02.jpg"

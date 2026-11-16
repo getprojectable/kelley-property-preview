@@ -59,5 +59,5 @@ Before launching on kelleyproperty.com:
 
 ## Notes
 
-- For listings without a street address, the map pin is approximate (placed by nearby landmarks), and the page says so.
+- Street addresses and map pins come from the original listing pages. Two original pins pointed to a placeholder location, so those two were geocoded from their addresses instead.
 - Map tiles come from © OpenStreetMap contributors.

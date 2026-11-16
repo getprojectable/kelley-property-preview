@@ -14,11 +14,10 @@ schools:
   high: "Washington"
   middle: "Franklin"
   elementary: "Kenwood"
-address: "124 34th St Dr SE, Cedar Rapids, IA 52403"
+address: "124 34th Street Drive SE, Cedar Rapids, IA 52403"
 location:
-  lat: 42.0127
-  lng: -91.6338
-  exact: true
+  lat: 42.012635
+  lng: -91.633878
 images:
   - "../../assets/properties/124-34th-st-dr-se-1-bedroom-1-bath/01.jpg"
   - "../../assets/properties/124-34th-st-dr-se-1-bedroom-1-bath/02.jpg"

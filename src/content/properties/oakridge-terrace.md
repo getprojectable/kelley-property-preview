@@ -14,10 +14,10 @@ schools:
   high: "Washington"
   middle: "McKinley"
   elementary: "Erskine"
+address: "3130 Pioneer Avenue SE, Cedar Rapids, IA 52403"
 location:
-  lat: 41.9696
-  lng: -91.6213
-  exact: false
+  lat: 41.9695666
+  lng: -91.6210934
 images:
   - "../../assets/properties/oakridge-terrace/01.jpg"
   - "../../assets/properties/oakridge-terrace/02.jpg"

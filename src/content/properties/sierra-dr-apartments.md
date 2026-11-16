@@ -14,11 +14,10 @@ schools:
   high: "Kennedy"
   middle: "Franklin"
   elementary: "Pierce"
-address: "Sierra Dr NE, Cedar Rapids, IA"
+address: "1421 Sierra Drive NE, Cedar Rapids, IA 52402"
 location:
-  lat: 42.0032
-  lng: -91.6685
-  exact: false
+  lat: 42.003167
+  lng: -91.668493
 images:
   - "../../assets/properties/sierra-dr-apartments/01.jpg"
   - "../../assets/properties/sierra-dr-apartments/02.jpg"

@@ -14,11 +14,10 @@ schools:
   high: "Linn Mar"
   middle: "Oakridge"
   elementary: "Bowman Woods"
-address: "6800 Devonshire Dr NE, Cedar Rapids, IA 52402"
+address: "6800 Devonshire Drive NE, Cedar Rapids, IA 52402"
 location:
-  lat: 42.0455
-  lng: -91.6364
-  exact: true
+  lat: 42.045645
+  lng: -91.636251
 images:
   - "../../assets/properties/6800-devonshire-dr-ne/01.jpg"
 legacyUrl: "https://www.kelleyproperty.com/property/6800-devonshire-dr-ne/"

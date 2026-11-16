@@ -14,10 +14,10 @@ schools:
   high: "Jefferson"
   middle: "Wilson"
   elementary: "Wilson"
+address: "2231 C Street SW, Cedar Rapids, IA 52404"
 location:
-  lat: 41.9504
-  lng: -91.6527
-  exact: false
+  lat: 41.958604
+  lng: -91.650637
 images:
   - "../../assets/properties/monarch-estate-apartments/01.jpg"
   - "../../assets/properties/monarch-estate-apartments/02.jpg"

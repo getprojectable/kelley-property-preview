@@ -14,10 +14,10 @@ schools:
   high: "Linn Mar"
   middle: "Oakridge"
   elementary: "Novak"
+address: "190 Ridge Drive, Marion, IA 52302"
 location:
-  lat: 42.0295
-  lng: -91.6221
-  exact: false
+  lat: 42.028946
+  lng: -91.622269
 images:
   - "../../assets/properties/wedgewood-apartments/01.jpg"
   - "../../assets/properties/wedgewood-apartments/02.jpg"

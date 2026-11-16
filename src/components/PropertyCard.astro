@@ -47,6 +47,7 @@ const href = url(`properties/${property.id}/`);
     <h3 class="mt-2 text-xl font-bold">
       <a href={href} class="after:absolute after:inset-0 focus-visible:outline-none">{p.title}</a>
     </h3>
+    <p class="mt-1 text-sm text-slate-500">{p.address.split(',')[0]}</p>
     <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600">{p.summary}</p>
     <div class="mt-auto pt-5">
       <div class="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-slate-100 pt-4 text-sm text-slate-700">

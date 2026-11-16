@@ -22,18 +22,15 @@ const types = typeOrder.filter((t) => all.some((p) => p.data.type === t));
 const features = [...new Set(all.flatMap((p) => p.data.features))].sort();
 
 const points = await Promise.all(
-  all
-    .filter((p) => p.data.location)
-    .map(async (p) => ({
-      id: p.id,
-      title: p.data.title,
-      lat: p.data.location!.lat,
-      lng: p.data.location!.lng,
-      exact: p.data.location!.exact,
-      href: url(`properties/${p.id}/`),
-      thumb: (await getImage({ src: p.data.images[0], width: 160, format: 'webp' })).src,
-      meta: `${p.data.type} · ${p.data.beds ? `${p.data.beds} bd · ${p.data.baths} ba · ` : ''}${p.data.city}`,
-    })),
+  all.map(async (p) => ({
+    id: p.id,
+    title: p.data.title,
+    lat: p.data.location.lat,
+    lng: p.data.location.lng,
+    href: url(`properties/${p.id}/`),
+    thumb: (await getImage({ src: p.data.images[0], width: 160, format: 'webp' })).src,
+    meta: `${p.data.address.split(',')[0]} · ${p.data.type}${p.data.beds ? ` · ${p.data.beds} bd · ${p.data.baths} ba` : ''}`,
+  })),
 );
 ---
 
@@ -111,7 +108,7 @@ const points = await Promise.all(
           <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-sm lg:sticky lg:top-44">
             <div id="map" class="h-[55vh] w-full lg:h-[calc(100vh-13rem)]"></div>
           </div>
-          <p class="mt-3 flex items-center gap-1.5 text-xs text-slate-500"><Icon name="pin" class="size-3.5" /> Pins show the general area of each community. Call for exact addresses.</p>
+          <p class="mt-3 flex items-center gap-1.5 text-xs text-slate-500"><Icon name="pin" class="size-3.5" /> Click a pin to see the property. Pins that share a building show all of its listings.</p>
         </div>
       </div>
     </div>

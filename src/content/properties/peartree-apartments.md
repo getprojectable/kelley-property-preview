@@ -14,10 +14,10 @@ schools:
   high: "Jefferson"
   middle: "Wilson"
   elementary: "Van Buren"
+address: "2120 Rockford Road SW, Cedar Rapids, IA 52404"
 location:
-  lat: 41.9574
-  lng: -91.6952
-  exact: false
+  lat: 41.957281
+  lng: -91.695588
 images:
   - "../../assets/properties/peartree-apartments/01.jpg"
   - "../../assets/properties/peartree-apartments/02.jpg"

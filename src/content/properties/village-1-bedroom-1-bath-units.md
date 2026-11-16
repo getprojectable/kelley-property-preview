@@ -14,10 +14,10 @@ schools:
   high: "Jefferson"
   middle: "Wilson"
   elementary: "Grant & Wilson"
+address: "25 Aossey Lane SW, Cedar Rapids, IA 52404"
 location:
-  lat: 41.918
-  lng: -91.658
-  exact: false
+  lat: 41.958908
+  lng: -91.657118
 images:
   - "../../assets/properties/village-1-bedroom-1-bath-units/01.jpg"
   - "../../assets/properties/village-1-bedroom-1-bath-units/02.jpg"

@@ -10,11 +10,10 @@ available: true
 featured: false
 summary: "Two Level Townhomes. Convenient Location to 1st Ave & I 380."
 features: ["Central Air Conditioning", "Central Heat", "Laundry Facilities On-site", "Off-Street Parking"]
-address: "A Ave NE, Cedar Rapids, IA 52402"
+address: "2801 A Avenue NE, Cedar Rapids, IA 52402"
 location:
-  lat: 42.0053
-  lng: -91.6368
-  exact: false
+  lat: 42.005434
+  lng: -91.635861
 images:
   - "../../assets/properties/lancer-2/01.jpg"
   - "../../assets/properties/lancer-2/02.jpg"

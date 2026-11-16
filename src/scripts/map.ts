@@ -9,7 +9,6 @@ export interface MapPoint {
   href?: string;
   thumb?: string;
   meta?: string;
-  exact?: boolean;
 }
 
 const pinSvg = (active = false) =>
@@ -42,8 +41,7 @@ export function createMap(el: HTMLElement, opts: { center?: [number, number]; zo
 export function popupHtml(p: MapPoint) {
   return `<a href="${p.href ?? '#'}" class="kp-popup">
     ${p.thumb ? `<img src="${p.thumb}" alt="" loading="lazy">` : ''}
-    <span class="kp-popup-body"><strong>${escapeHtml(p.title)}</strong>${p.meta ? `<span>${escapeHtml(p.meta)}</span>` : ''}
-    ${p.exact === false ? '<em>Approximate area</em>' : ''}</span></a>`;
+    <span class="kp-popup-body"><strong>${escapeHtml(p.title)}</strong>${p.meta ? `<span>${escapeHtml(p.meta)}</span>` : ''}</span></a>`;
 }
 
 /** Group points sharing coordinates so stacked listings get a single pin with a combined popup. */

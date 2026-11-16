@@ -6,7 +6,9 @@ import Icon from '../components/Icon.astro';
 import PropertyCard from '../components/PropertyCard.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { company, url } from '../data/site';
-import heroImg from '../assets/properties/camelot-apartments/01.jpg';
+import heroMain from '../assets/properties/monarch-estate-apartments/01.jpg';
+import heroTop from '../assets/properties/colonial-house/01.jpg';
+import heroBottom from '../assets/properties/peartree-apartments/01.jpg';
 import sideImg from '../assets/properties/village-1-bedroom-1-bath-units/01.jpg';
 import sideImg2 from '../assets/properties/colonial-house/06.jpg';
 import vacationImg from '../assets/vacation/waters-edge/04.jpg';
@@ -31,14 +33,13 @@ const reasons = [
 ---
 
 <Layout>
-  <!-- Hero -->
+  <!-- Hero: split layout so the modest-resolution listing photos are never stretched across wide screens. -->
   <section class="relative isolate overflow-hidden bg-brand-950">
-    <Image src={heroImg} alt="The Camelot apartments in Hiawatha" widths={[800, 1024]} sizes="100vw" class="absolute inset-0 -z-10 size-full object-cover" loading="eager" fetchpriority="high" />
-    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-brand-950/95 via-brand-950/75 to-brand-950/20"></div>
-    <div class="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-brand-950/60 to-transparent"></div>
+    <div class="pointer-events-none absolute -left-40 top-0 -z-10 size-[36rem] rounded-full bg-brand-700/30 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-40 right-0 -z-10 size-[30rem] rounded-full bg-brand-500/20 blur-3xl"></div>
 
-    <div class="container-x grid gap-12 pb-28 pt-20 sm:pt-28 lg:grid-cols-12 lg:pb-36">
-      <div class="lg:col-span-7">
+    <div class="container-x grid items-center gap-14 pb-28 pt-16 sm:pt-20 lg:grid-cols-2 lg:gap-16 lg:pb-36 lg:pt-24">
+      <div>
         <p class="eyebrow animate-fade-up !text-brand-300"><span class="h-px w-8 bg-brand-400"></span> Cedar Rapids · Marion · Hiawatha</p>
         <h1 class="mt-5 animate-fade-up text-4xl font-extrabold leading-[1.05] !text-white sm:text-6xl">
           Find a place that feels like <span class="text-brand-300">home</span>.
@@ -49,6 +50,29 @@ const reasons = [
         <div class="mt-9 flex animate-fade-up flex-wrap gap-3 [animation-delay:200ms]">
           <a href={url('properties/')} class="btn btn-primary !px-7 !py-3.5 text-base">Browse Rentals <Icon name="arrow" class="size-4" /></a>
           <a href={company.phoneHref} class="btn btn-ghost-light !px-7 !py-3.5 text-base"><Icon name="phone" class="size-4" /> {company.phone}</a>
+        </div>
+      </div>
+
+      <div class="relative animate-fade-up [animation-delay:150ms]">
+        <div class="grid grid-cols-5 gap-4">
+          <a href={url('properties/monarch-estate-apartments/')} class="group col-span-3 overflow-hidden rounded-[1.75rem] shadow-2xl shadow-black/30 ring-1 ring-white/10">
+            <Image src={heroMain} alt="Monarch Estates apartments in Cedar Rapids" widths={[480, 720, 1000]} sizes="(min-width:1024px) 34vw, 60vw" class="aspect-[3/4] size-full object-cover transition duration-700 group-hover:scale-105" loading="eager" fetchpriority="high" />
+          </a>
+          <div class="col-span-2 flex flex-col gap-4 pt-10">
+            <a href={url('properties/colonial-house/')} class="group overflow-hidden rounded-[1.5rem] shadow-xl shadow-black/30 ring-1 ring-white/10">
+              <Image src={heroTop} alt="Colonial House apartments" widths={[320, 520]} sizes="(min-width:1024px) 22vw, 40vw" class="aspect-square size-full object-cover transition duration-700 group-hover:scale-105" loading="eager" />
+            </a>
+            <a href={url('properties/peartree-apartments/')} class="group overflow-hidden rounded-[1.5rem] shadow-xl shadow-black/30 ring-1 ring-white/10">
+              <Image src={heroBottom} alt="Peartree apartments" widths={[320, 520]} sizes="(min-width:1024px) 22vw, 40vw" class="aspect-[4/5] size-full object-cover transition duration-700 group-hover:scale-105" loading="eager" />
+            </a>
+          </div>
+        </div>
+        <div class="absolute -bottom-6 left-4 flex items-center gap-3 rounded-2xl bg-white p-4 pr-6 shadow-2xl sm:-left-6">
+          <span class="inline-flex size-11 items-center justify-center rounded-xl bg-brand-600 text-white"><Icon name="home" class="size-5" /></span>
+          <span>
+            <span class="block font-display text-2xl font-extrabold leading-none text-brand-800">{company.units}</span>
+            <span class="text-xs font-medium text-slate-500">rental units to choose from</span>
+          </span>
         </div>
       </div>
     </div>

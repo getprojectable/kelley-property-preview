@@ -3,7 +3,7 @@ import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
-import { belizeInvestment, belizeRentals, company, keyWestHomes, url } from '../data/site';
+import { belizeRentals, company, keyWestHomes, url } from '../data/site';
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/vacation/*/*.jpg', { eager: true });
 const photosFor = (slug: string, order: number[]) =>
@@ -25,7 +25,7 @@ const perks = [
 ] as const;
 ---
 
-<Layout title="Key West & Belize Vacation Rentals" description="Kelley Properties' vacation homes in Key West, Florida — The Water's Edge and Truman Treasure — plus Belize condos and investment opportunities." image={hero.src}>
+<Layout title="Key West & Belize Vacation Rentals" description="Kelley Properties' vacation homes in Key West, Florida — The Water's Edge and Truman Treasure — plus Belize condos." image={hero.src}>
   <!-- Hero -->
   <section class="relative isolate flex min-h-[78vh] items-end overflow-hidden bg-sky-950">
     <Image src={hero} alt="Ocean-view deck at The Water's Edge in Key West" widths={[800, 1280, 1600]} sizes="100vw" class="absolute inset-0 -z-10 size-full object-cover" loading="eager" fetchpriority="high" />
@@ -35,7 +35,7 @@ const perks = [
       <p class="eyebrow animate-fade-up !text-amber-200"><Icon name="sun" class="size-4" /> Tropical Vacation Rentals</p>
       <h1 class="mt-4 max-w-3xl animate-fade-up text-5xl font-extrabold leading-[1.02] !text-white sm:text-7xl">Your Key West escape.</h1>
       <p class="mt-5 max-w-xl animate-fade-up text-lg text-white/90 [animation-delay:120ms]">
-        Two private homes steps from Duval Street, with pools, ocean-view decks and island breezes, plus condos and investment opportunities in Belize.
+        Two private homes steps from Duval Street, with pools, ocean-view decks and island breezes, plus condos in Belize.
       </p>
       <div class="mt-8 flex animate-fade-up flex-wrap gap-3 [animation-delay:200ms]">
         {homes.map((h) => <a href={`#${h.slug}`} class="btn bg-white/95 text-sky-900 hover:bg-white">{h.name} <Icon name="arrow" class="size-4 rotate-90" /></a>)}
@@ -139,16 +139,6 @@ const perks = [
         <a href={company.phoneHref} class="btn bg-white text-sky-900 hover:bg-amber-50"><Icon name="phone" class="size-4" /> Call for availability</a>
         <a href={url('contact/')} class="btn btn-ghost-light"><Icon name="mail" class="size-4" /> Send a message</a>
       </div>
-
-      <a href={belizeInvestment.url} target="_blank" rel="noopener" class="group mt-14 flex flex-col gap-6 rounded-[2rem] bg-white p-8 text-ink shadow-2xl sm:flex-row sm:items-center sm:p-10">
-        <span class="inline-flex size-16 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-700"><Icon name="key" class="size-8" /></span>
-        <span class="flex-1">
-          <span class="block text-sm font-semibold uppercase tracking-wider text-amber-700">Investment opportunity</span>
-          <span class="mt-1 block font-display text-2xl font-extrabold">{belizeInvestment.name}</span>
-          <span class="mt-1 block text-slate-600">Own a piece of paradise in Belize — learn about condo ownership.</span>
-        </span>
-        <span class="inline-flex items-center gap-2 font-semibold text-sky-700">Learn more <Icon name="external" class="size-4 transition group-hover:translate-x-0.5" /></span>
-      </a>
     </div>
   </section>
 

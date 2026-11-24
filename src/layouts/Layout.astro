@@ -25,7 +25,6 @@ const schema = {
   name: company.name,
   slogan: company.tagline,
   telephone: company.phone,
-  faxNumber: company.fax,
   url: 'https://www.kelleyproperty.com',
   address: {
     '@type': 'PostalAddress',
@@ -36,7 +35,7 @@ const schema = {
     addressCountry: 'US',
   },
   geo: { '@type': 'GeoCoordinates', latitude: company.office.lat, longitude: company.office.lng },
-  openingHours: ['Mo-Fr 08:00-17:00', 'Sa 09:00-15:00'],
+  openingHours: ['Mo-Fr 08:00-17:00'],
   areaServed: ['Cedar Rapids, IA', 'Marion, IA', 'Hiawatha, IA'],
 };
 ---

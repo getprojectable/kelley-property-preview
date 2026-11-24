@@ -4,7 +4,6 @@ export const company = {
   tagline: 'Something for Everyone',
   phone: '(319) 365-3156',
   phoneHref: 'tel:+13193653156',
-  fax: '(319) 365-3306',
   street: '2750 1st Avenue NE, Suite 230',
   city: 'Cedar Rapids',
   region: 'IA',
@@ -14,12 +13,11 @@ export const company = {
   office: { lat: 42.0043, lng: -91.6349 },
   hours: [
     { days: 'Monday – Friday', time: '8:00 a.m. – 5:00 p.m.' },
-    { days: 'Saturday', time: '9:00 a.m. – 3:00 p.m.' },
-    { days: 'Sunday', time: 'Closed' },
+    { days: 'Saturday – Sunday', time: 'Closed' },
   ],
   hoursNote: 'Holidays may affect our business hours. Please call ahead.',
   yearsInBusiness: '30+',
-  units: '1,000+',
+  units: '500+',
 };
 
 export const nav = [
@@ -78,8 +76,6 @@ export const belizeRentals = [
   { name: 'Sunset Caribe #2' },
   { name: 'Sunset Caribe #3' },
 ];
-
-export const belizeInvestment = { name: 'Belize Investment Condos', url: 'https://puestadelsolresort.com/' };
 
 /** Form submissions go to Web3Forms (free). Set PUBLIC_WEB3FORMS_KEY at build time to enable delivery. */
 export const formsKey: string = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';

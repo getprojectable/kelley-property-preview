@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/kelley-logo.png';
 import Icon from './Icon.astro';
-import { belizeInvestment, company, keyWestHomes, nav, url } from '../data/site';
+import { company, keyWestHomes, nav, url } from '../data/site';
 const year = new Date().getFullYear();
 ---
 
@@ -35,7 +35,6 @@ const year = new Date().getFullYear();
           <li><a class="hover:text-white" href={url(`vacation-rentals/#${v.slug}`)}>{v.name} <span class="text-brand-100/50">· Key West</span></a></li>
         ))}
         <li><a class="hover:text-white" href={url('vacation-rentals/#belize')}>Belize condos <span class="text-brand-100/50">· Grand Caribe &amp; Sunset Caribe</span></a></li>
-        <li><a class="inline-flex items-center gap-1.5 hover:text-white" href={belizeInvestment.url} target="_blank" rel="noopener">{belizeInvestment.name} <Icon name="external" class="size-3 opacity-60" /></a></li>
       </ul>
     </div>
 
@@ -46,7 +45,7 @@ const year = new Date().getFullYear();
         <li class="flex gap-3"><Icon name="clock" class="mt-0.5 size-4 shrink-0 text-brand-400" />
           <span>{company.hours.map((h) => <span class="block">{h.days}: {h.time}</span>)}</span>
         </li>
-        <li class="flex gap-3"><Icon name="phone" class="mt-0.5 size-4 shrink-0 text-brand-400" /><span>Phone <a class="text-white hover:underline" href={company.phoneHref}>{company.phone}</a><br />Fax {company.fax}</span></li>
+        <li class="flex gap-3"><Icon name="phone" class="mt-0.5 size-4 shrink-0 text-brand-400" /><span>Phone <a class="text-white hover:underline" href={company.phoneHref}>{company.phone}</a></span></li>
       </ul>
     </div>
   </div>

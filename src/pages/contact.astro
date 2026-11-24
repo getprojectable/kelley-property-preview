@@ -12,7 +12,7 @@ import { company } from '../data/site';
   <section class="container-x grid gap-10 py-16 lg:grid-cols-[380px_minmax(0,1fr)]">
     <div class="space-y-5">
       {[
-        { icon: 'phone', title: 'Call us', lines: [`Phone: ${company.phone}`, `Fax: ${company.fax}`], href: company.phoneHref, cta: 'Call now' },
+        { icon: 'phone', title: 'Call us', lines: [`Phone: ${company.phone}`], href: company.phoneHref, cta: 'Call now' },
         { icon: 'pin', title: 'Visit the office', lines: [company.street, `${company.city}, ${company.region} ${company.postal}`], href: company.mapsUrl, cta: 'Get directions' },
         { icon: 'clock', title: 'Office hours', lines: company.hours.map((h) => `${h.days}: ${h.time}`), note: company.hoursNote },
       ].map((c) => (

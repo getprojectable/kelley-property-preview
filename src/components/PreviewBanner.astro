@@ -1,6 +1,5 @@
 ---
-// Shown only on the customer preview build. Disable with PUBLIC_PREVIEW_BANNER=false.
-const show = import.meta.env.PUBLIC_PREVIEW_BANNER !== 'false';
+import { isPreview as show } from '../data/site';
 ---
 
 {show && (

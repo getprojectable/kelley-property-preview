@@ -1,0 +1,28 @@
+---
+// Redirects for the old WordPress taxonomy and author archives (from wp-sitemap.xml).
+import Redirect from '../components/Redirect.astro';
+
+export function getStaticPaths() {
+  const search = (q = '') => `properties/${q ? `?${q}` : ''}`;
+  const cities: Record<string, string> = { 'cedar-rapids': 'Cedar Rapids', marion: 'Marion', hiawatha: 'Hiawatha' };
+  const types: Record<string, string> = { apartment: 'Apartment', house: 'House', townhouse: 'Townhouse', commercial: 'Commercial' };
+  const neighborhoods = ['southwest', 'northwest', 'northeast', 'southeast'];
+  const features = [
+    'garage-included', 'dishwasher', 'balconypatio', 'fireplace', 'central-air-conditioning', 'on-site-laundry',
+    'garage-extra', 'off-street-parking', 'laundry-hook-ups', 'central-heat', 'formal-dining-room', 'air-conditioning',
+  ];
+
+  const legacy: [string, string][] = [
+    ...Object.entries(cities).map(([s, c]): [string, string] => [`property-city/${s}`, search(`city=${encodeURIComponent(c)}`)]),
+    ...Object.entries(types).map(([s, t]): [string, string] => [`property-type/${s}`, search(`type=${t}`)]),
+    ...neighborhoods.map((s): [string, string] => [`property-city/${s}`, search()]),
+    ...features.map((s): [string, string] => [`property-feature/${s}`, search()]),
+    ['property-status/available', search()],
+    ['author/mgrant', ''],
+    ['author/redilson', ''],
+  ];
+  return legacy.map(([path, to]) => ({ params: { legacy: path }, props: { to } }));
+}
+---
+
+<Redirect to={Astro.props.to} />

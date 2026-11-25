@@ -80,5 +80,8 @@ export const belizeRentals = [
 /** Form submissions go to Web3Forms (free). Set PUBLIC_WEB3FORMS_KEY at build time to enable delivery. */
 export const formsKey: string = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 
+/** Preview builds show a banner and are hidden from search engines. Set PUBLIC_PREVIEW=false for production. */
+export const isPreview: boolean = import.meta.env.PUBLIC_PREVIEW !== 'false';
+
 /** Prefix an internal path with the configured base. */
 export const url = (path = '') => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;

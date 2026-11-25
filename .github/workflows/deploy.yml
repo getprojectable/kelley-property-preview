@@ -1,4 +1,7 @@
-name: Deploy preview to GitHub Pages
+name: Deploy to GitHub Pages
+
+# Preview by default (https://<owner>.github.io/<repo>/, banner + noindex).
+# Set the repository variable CUSTOM_DOMAIN (e.g. www.kelleyproperty.com) to build for production.
 
 on:
   push:
@@ -30,12 +33,15 @@ jobs:
         env:
           # Optional: add a repository secret named WEB3FORMS_KEY to deliver form submissions by email.
           PUBLIC_WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
-          SITE_URL: https://${{ github.repository_owner }}.github.io
-          BASE_PATH: /${{ github.event.repository.name }}
+          SITE_URL: ${{ vars.CUSTOM_DOMAIN && format('https://{0}', vars.CUSTOM_DOMAIN) || format('https://{0}.github.io', github.repository_owner) }}
+          BASE_PATH: ${{ vars.CUSTOM_DOMAIN && '/' || format('/{0}', github.event.repository.name) }}
+          PUBLIC_PREVIEW: ${{ vars.CUSTOM_DOMAIN && 'false' || 'true' }}
 
       # Publishes dist/ to the gh-pages branch, which GitHub Pages serves.
+      # force_orphan replaces the branch each run, so the CNAME file must be written every time.
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           force_orphan: true
+          cname: ${{ vars.CUSTOM_DOMAIN }}

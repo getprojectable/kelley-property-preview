@@ -13,13 +13,16 @@ It's a fast static site with no database or server, and it's hosted free on GitH
 - Apply page with the existing Tenant and Co-Signer PDF applications
 - About and Tropical Vacation Rentals pages
 - SEO basics: per-page titles and descriptions, Open Graph tags and schema.org `RealEstateAgent`
-- Legacy WordPress URLs (`/property/...`, `/search-properties/`, `/application/`, `/contact-us/`) redirect to their new pages
+- Legacy WordPress URLs (`/property/...`, `/search-properties/`, `/application/`, `/contact-us/`, and the
+  `/property-city/`, `/property-type/`, `/property-feature/`, `/property-status/` and `/author/` archives)
+  redirect to their new pages
+- `sitemap-index.xml` and `robots.txt` are generated at build time
 
 ## Develop
 
 ```bash
 npm install
-npm run dev        # http://localhost:4321/kelley-property-preview/
+npm run dev        # http://localhost:4321/
 npm run build      # outputs dist/
 npm run check      # type-check
 ```
@@ -49,13 +52,14 @@ Without a key, forms run in **preview mode**: they validate and show a success m
 
 `.github/workflows/deploy.yml` builds the site on every push to `main` and publishes it to the `gh-pages` branch.
 In **Settings → Pages**, set the source to **Deploy from a branch → `gh-pages` / root**.
-The site is then served at `https://<owner>.github.io/<repo>/`.
 
-The preview build includes a `noindex` meta tag and a "Design preview" banner.
-Before launching on kelleyproperty.com:
+| Repository variable `CUSTOM_DOMAIN` | Build |
+|---|---|
+| not set | **Preview** at `https://<owner>.github.io/<repo>/`, with a "Design preview" banner and `noindex` |
+| `www.kelleyproperty.com` | **Production** at the domain root: no banner, indexable, and a `CNAME` file is published |
 
-- Build with `SITE_URL=https://www.kelleyproperty.com BASE_PATH=/ PUBLIC_PREVIEW_BANNER=false`.
-- Remove the `robots` noindex tag in `src/layouts/Layout.astro`.
+`PUBLIC_PREVIEW=false` turns off the banner and `noindex` (CI sets it from `CUSTOM_DOMAIN`).
+The step-by-step move from InMotion is in [docs/LAUNCH.md](docs/LAUNCH.md).
 
 ## Notes
 

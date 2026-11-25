@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import FormShell from '../components/FormShell.astro';
 import Icon from '../components/Icon.astro';
-import { company } from '../data/site';
+import { company, residentPortal } from '../data/site';
 import bg from '../assets/properties/lancer/01.jpg';
 
 const floors = ['Main', 'Basement', '2nd Floor'];
@@ -16,6 +16,11 @@ const items = ['Air Conditioning', 'Appliances', 'Building Exterior', 'Dishwashe
 
   <section class="container-x grid gap-10 py-16 lg:grid-cols-[minmax(0,1fr)_340px]">
     <div class="card p-6 sm:p-10">
+      <p class="mb-8 rounded-2xl bg-brand-50 p-4 text-sm text-slate-700 lg:hidden">
+        <strong>RentCafe residents:</strong> you can pay rent and submit requests in the
+        <a href={residentPortal} target="_blank" rel="noopener" class="font-semibold text-brand-700 underline">resident portal</a>.
+        Otherwise, use the form below.
+      </p>
       <FormShell subject="Service Request" submitLabel="Submit request">
         <fieldset>
           <legend class="text-lg font-bold text-ink">Your information</legend>
@@ -61,6 +66,11 @@ const items = ['Air Conditioning', 'Appliances', 'Building Exterior', 'Dishwashe
     </div>
 
     <aside class="space-y-6">
+      <div class="rounded-3xl bg-brand-50 p-6 ring-1 ring-brand-100">
+        <h2 class="flex items-center gap-2 text-lg font-bold"><Icon name="key" class="size-5 text-brand-700" /> Have a RentCafe account?</h2>
+        <p class="mt-2 text-sm text-slate-600">Log in to the resident portal to pay rent online and submit or track maintenance requests. Not on RentCafe? Just use this form.</p>
+        <a href={residentPortal} target="_blank" rel="noopener" class="btn btn-primary mt-4 w-full">Resident Login <Icon name="external" class="size-4" /></a>
+      </div>
       <div class="rounded-3xl bg-red-50 p-6 ring-1 ring-red-100">
         <h2 class="flex items-center gap-2 text-lg font-bold !text-red-900"><Icon name="phone" class="size-5" /> Emergency?</h2>
         <p class="mt-2 text-sm text-red-900/80">For fire, flooding, gas smells or anything urgent, call 911 if needed and then call our office right away — don't wait on an online request.</p>

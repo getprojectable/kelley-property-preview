@@ -20,6 +20,9 @@ export const company = {
   units: '500+',
 };
 
+/** Yardi RentCafe resident portal: pay rent and submit maintenance requests. Not all tenants are on it yet. */
+export const residentPortal = 'https://www.rentcafe.com/residentservices/apartmentsforrent/userlogin.aspx';
+
 export const nav = [
   { label: 'Find a Home', href: 'properties/' },
   { label: 'Apply', href: 'apply/' },

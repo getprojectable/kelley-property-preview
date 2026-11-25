@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/kelley-logo.png';
 import Icon from './Icon.astro';
-import { company, keyWestHomes, nav, url } from '../data/site';
+import { company, keyWestHomes, nav, residentPortal, url } from '../data/site';
 const year = new Date().getFullYear();
 ---
 
@@ -17,6 +17,7 @@ const year = new Date().getFullYear();
       </p>
       <div class="mt-6 flex flex-wrap gap-3">
         <a href={company.phoneHref} class="btn bg-brand-500 text-white hover:bg-brand-400"><Icon name="phone" class="size-4" /> {company.phone}</a>
+                <a href={residentPortal} target="_blank" rel="noopener" class="btn border border-white/20 text-white hover:bg-white/10"><Icon name="key" class="size-4" /> Pay Rent Online</a>
       </div>
     </div>
 
